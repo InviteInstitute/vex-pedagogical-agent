@@ -7,6 +7,7 @@ purpose; the int8 one ran ~6x slower there (no VNNI), fp16 was no faster.
 
 Model files come from scripts/fetch_kokoro.py (into server/models/, git-ignored).
 """
+
 import io
 import logging
 import os
@@ -48,9 +49,7 @@ def to_wav(samples: np.ndarray, sample_rate: int) -> bytes:
 
 
 def synthesize(text: str) -> bytes:
-    samples, sample_rate = _kokoro().create(
-        text, voice=TTS_VOICE, speed=TTS_SPEED, lang="en-us"
-    )
+    samples, sample_rate = _kokoro().create(text, voice=TTS_VOICE, speed=TTS_SPEED, lang="en-us")
     return to_wav(samples, sample_rate)
 
 

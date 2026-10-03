@@ -13,8 +13,9 @@ dependencies = [
     "psycopg[binary]==3.2.10",
     "python-dotenv==1.1.1",
     "python-multipart>=0.0.9",  # FastAPI Form/UploadFile parsing for the Unity bridge
-
-    "apted>=1.0",              # per-run code-diff signal: APTED tree-edit distance (trigger engine)
+    # The trigger + learner-model engine (and its apted dependency) come from the
+    # agent-lm-packages submodule, installed editable from server/vendor
+    # (see the Dockerfile and requirements.txt).
     "uvicorn==0.35.0",
     "itsdangerous>=2.1",       # signs the "solved Turnstile" cookie (api/turnstile)
     "httpx",                   # Turnstile siteverify (also pulled in by openai)
@@ -22,7 +23,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest==8.4.2"]
+dev = ["pytest==8.4.2", "ruff==0.16.2"]
 
 [project.scripts]
 vex-parse-logs = "vex_agent.ingest.parse_event_logs:main"
@@ -31,5 +32,27 @@ vex-fetch-logs = "vex_agent.ingest.fetch_invite_hub_logs:main"
 [tool.setuptools.packages.find]
 include = ["vex_agent*"]
 
-[tool.setuptools.package-data]
-vex_agent = ["triggers/vex_blocks.json"]
+# Scope pytest to this repo's own suite. The agent-lm-packages submodule ships its
+# own tests under vendor/ (some need its root conftest and optional extras); they
+# are validated in that repo, not here.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# Ruff owns linting and formatting. This block is kept identical to lm-dashboard
+# so both repos lint and format the same way.
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*.egg-info"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "E501",   # line length is the formatter's call; this code favors dense lines
+    "E402",   # deliberate late imports (load_dotenv before importing the data layer)
+    "E741",   # a few short-lived loop vars read fine in context
+    "E731",   # the odd lambda binding is clearer left inline
+    "B905",   # our zip() pairs are equal-length by construction
+    "UP042",  # str-enum migration is a semantic change, out of scope here
+    "UP035",  # the flagged deprecated-import paths are intentional compat
+]

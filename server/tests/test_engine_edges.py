@@ -1,8 +1,8 @@
 """Edge-case coverage for the vendored engine: distance cache/multi-root/field
 changes, workspace-XML extraction variants, and JSON-string event content."""
-from vex_agent.triggers.distance import compute_edit_distance, cached_edit_distance, clear_cache
-from vex_agent.triggers.ast_builder import xml_to_block_ast, extract_workspace_xml
-from vex_agent.triggers.run_sequence import compute_run_edit_distances
+
+from learner_models import compute_run_edit_distances, extract_workspace_xml, xml_to_block_ast
+from learner_models.distance import cached_edit_distance, clear_cache, compute_edit_distance
 
 XMLNS = 'xmlns="https://developers.google.com/blockly/xml"'
 EMPTY = f"<xml {XMLNS}></xml>"
@@ -26,8 +26,12 @@ def test_multi_root_and_empty_distance():
 
 
 def test_field_only_change_costs():
-    a = xml_to_block_ast(f'<xml {XMLNS}><block type="t" id="1"><field name="N">1</field></block></xml>')
-    b = xml_to_block_ast(f'<xml {XMLNS}><block type="t" id="1"><field name="N">2</field></block></xml>')
+    a = xml_to_block_ast(
+        f'<xml {XMLNS}><block type="t" id="1"><field name="N">1</field></block></xml>'
+    )
+    b = xml_to_block_ast(
+        f'<xml {XMLNS}><block type="t" id="1"><field name="N">2</field></block></xml>'
+    )
     assert compute_edit_distance(a, b) > 0
 
 
@@ -41,7 +45,9 @@ def test_extract_workspace_xml_variants():
 
 
 def test_keep_shadow_blocks():
-    ast = xml_to_block_ast(f'<xml {XMLNS}><shadow type="s" id="1"></shadow></xml>', keep_shadow=True)
+    ast = xml_to_block_ast(
+        f'<xml {XMLNS}><shadow type="s" id="1"></shadow></xml>', keep_shadow=True
+    )
     assert "1" in ast["nodes"]
 
 

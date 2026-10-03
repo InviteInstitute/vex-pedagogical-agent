@@ -2,25 +2,8 @@ import logging
 from time import monotonic
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
-from vex_agent.config import DEFAULT_PLAYGROUND
-from vex_agent.domain.metrics import (
-    compute_snapshot_for_student_session,
-    has_active_project_run,
-    select_current_playground_segment,
-)
-from vex_agent.data.db import (
-    fetch_events_from_db,
-    get_latest_session_id_for_student,
-    get_message_id_for_response,
-    insert_message,
-    insert_message_feedback,
-)
-from vex_agent.domain.feedback_policy import FeedbackClass, determine_feedback_class
-from vex_agent.domain.question_types import QUESTION_TYPE_SPECS
-from vex_agent.services.feedback import generate_feedback
-from vex_agent.services.logsync import sync_invite_hub_logs
 from vex_agent.api.schemas import (
     FeedbackRequest,
     FeedbackResponse,
@@ -30,8 +13,28 @@ from vex_agent.api.schemas import (
     StudentResponseRequest,
     StudentResponseResponse,
 )
-from vex_agent.services.sessions import append_session_message
+from vex_agent.api.turnstile import COOKIE_NAME
+from vex_agent.config import DEFAULT_PLAYGROUND, get_navigator_model
+from vex_agent.data.db import (
+    fetch_events_from_db,
+    get_latest_session_id_for_student,
+    get_message_id_for_response,
+    insert_message,
+    insert_message_feedback,
+)
 from vex_agent.domain.catalogs import resolve_task_description
+from vex_agent.domain.feedback_policy import FeedbackClass, determine_feedback_class
+from vex_agent.domain.metrics import (
+    compute_snapshot_for_student_session,
+    has_active_project_run,
+    select_current_playground_segment,
+)
+from vex_agent.domain.question_types import QUESTION_TYPE_SPECS
+from vex_agent.llm.client import DEFAULT_GENERATION_SETTINGS, GenerationSettings
+from vex_agent.services import budget
+from vex_agent.services.feedback import generate_feedback
+from vex_agent.services.logsync import sync_invite_hub_logs
+from vex_agent.services.sessions import RESEARCH_CHAT, append_session_message
 
 router = APIRouter(prefix="/v1", tags=["students"])
 logger = logging.getLogger(__name__)
@@ -57,7 +60,10 @@ def maybe_sync_invite_hub_logs(student_id: str) -> int:
     now = monotonic()
     if last_sync_at is not None and now - last_sync_at < SYNC_COOLDOWN_S:
         return 0
-    synced_count = sync_invite_hub_logs(student_id=student_id)
+    # cursor-neutral: a per-student freshness fetch must not advance the global
+    # ingest cursor (that's owned by the daemon / boot warm-up), or it would skip
+    # other students' unsynced rows. Idempotent inserts make the re-fetch a no-op.
+    synced_count = sync_invite_hub_logs(student_id=student_id, advance_cursor=False)
     _last_sync_at[student_id] = now
     return synced_count
 
@@ -109,6 +115,7 @@ def resolve_session(student_id: str) -> SessionResolutionResponse:
         status="resolved",
     )
 
+
 @router.post("/students/{student_id}/messages", response_model=MessageResponse)
 def create_message(student_id: str, payload: MessageRequest) -> MessageResponse:
     message_id = uuid4()
@@ -126,12 +133,14 @@ def create_message(student_id: str, payload: MessageRequest) -> MessageResponse:
         session_id=resolved_session_id,
         role="student",
         content=student_message_text,
+        chat=payload.chat,
     )
     insert_message(
         session_id=session_uuid,
         student_id=student_id,
         role="student",
         message_text=student_message_text,
+        origin="research" if payload.chat == RESEARCH_CHAT else "reactive",
     )
     log_stage(
         "Student Message Received",
@@ -156,7 +165,24 @@ def create_message(student_id: str, payload: MessageRequest) -> MessageResponse:
 def create_response(
     student_id: str,
     payload: StudentResponseRequest,
+    request: Request,
 ) -> StudentResponseResponse:
+    # The research chat is kept apart from the student chat: its own history, and its
+    # rows stored as origin='research'. Overrides only ever come from the research chat.
+    settings = DEFAULT_GENERATION_SETTINGS
+    chat = RESEARCH_CHAT if payload.overrides is not None else payload.chat
+    origin = "research" if chat == RESEARCH_CHAT else "reactive"
+    if payload.overrides is not None:
+        settings = GenerationSettings(**payload.overrides.model_dump())
+    # Every LLM call made for this browser counts against its session's token budget
+    # (services/budget.py). Refuse before doing any work once it's spent.
+    budget_key = budget.budget_key(request.cookies.get(COOKIE_NAME), student_id)
+    if payload.student_message:
+        try:
+            budget.check_budget(budget_key)
+        except budget.TokenBudgetExceeded as error:
+            raise HTTPException(status_code=429, detail=str(error)) from error
+    llm_tokens = 0
     response_id = uuid4()
     resolved_session_id = payload.session_id
     resolved_playground = payload.playground or DEFAULT_PLAYGROUND
@@ -167,8 +193,10 @@ def create_response(
     synced_log_count = 0
     task = resolve_task_description(resolved_playground)
 
-    # Refresh event logs — always pull so feedback reflects the student's newest run
-    sync_invite_hub_logs(student_id=student_id)
+    # Refresh event logs — always pull so feedback reflects the student's newest run.
+    # cursor-neutral (see maybe_sync_invite_hub_logs): freshness for this student only,
+    # never advancing the global ingest cursor the daemon owns.
+    sync_invite_hub_logs(student_id=student_id, advance_cursor=False)
 
     if task and payload.student_message:
         try:
@@ -240,6 +268,8 @@ def create_response(
                 feedback_classes=feedback_classes,
                 student_message=payload.student_message,
                 events=events,
+                settings=settings,
+                chat=chat,
             )
             llm_request = result["llm_request"]
             if result["question_type"]:
@@ -261,11 +291,30 @@ def create_response(
                 student_id=student_id,
                 session_id=resolved_session_id,
                 model=llm_request["model"],
+                origin=origin,
+                settings=settings,
                 prompt=llm_request["prompt"],
             )
             response_text = llm_request["response_text"]
+            llm_tokens = llm_request["tokens"]
         except Exception as error:
+            # A call that spent tokens and still failed counts too, or failing on
+            # purpose would be a free way to spend them.
+            budget.record_usage(
+                key=budget_key,
+                student_id=student_id,
+                model=settings.model or get_navigator_model(),
+                origin=origin,
+                tokens=getattr(error, "tokens", 0),
+            )
             raise HTTPException(status_code=500, detail=str(error)) from error
+        budget.record_usage(
+            key=budget_key,
+            student_id=student_id,
+            model=llm_request["model"],
+            origin=origin,
+            tokens=llm_tokens,
+        )
     elif not response_text:
         raise HTTPException(
             status_code=400,
@@ -283,6 +332,7 @@ def create_response(
         session_id=resolved_session_id,
         role="assistant",
         content=response_text,
+        chat=chat,
     )
     insert_message(
         session_id=session_uuid,
@@ -295,6 +345,7 @@ def create_response(
         if feedback_classes
         else None,
         response_id=response_id,
+        origin=origin,
         question_type=question_type,
     )
     log_stage(
@@ -314,6 +365,8 @@ def create_response(
         response_text=response_text,
         llm_model=llm_request["model"] if llm_request else None,
         llm_prompt=llm_request["prompt"] if llm_request else None,
+        llm_tokens=llm_tokens if llm_request else None,
+        session_tokens=budget.session_usage(budget_key),
         question_type=question_type,
         status="received",
     )

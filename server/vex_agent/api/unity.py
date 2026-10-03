@@ -14,10 +14,12 @@ ponytail: unauthenticated, same as the original Flask `app.py` bridge it
 replaces. The `/v1/*` routes are Turnstile-gated; these are not. Put behind
 auth / a gateway before exposing publicly.
 """
+
 import json
 import logging
 import os
 import re
+from typing import Annotated
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import Response
@@ -33,7 +35,7 @@ logger = logging.getLogger(__name__)
 # ponytail: the transcription model is a calibration knob; each LLM provider
 # exposes its own (e.g. granite-speech-4.1-2b-plus on NCSA Lumen).
 TRANSCRIBE_MODEL = os.getenv("TRANSCRIBE_MODEL", "gpt-4o-transcribe")
-# Replies are capped at 40 words upstream; this only bounds abuse of the open endpoint.
+# Replies are capped at 40 words by the LLM client; this only bounds abuse of the open endpoint.
 TTS_MAX_CHARS = 500
 _BLOCK_PLACEHOLDER = re.compile(r"\s*\[[^\]]*\]")
 _BACKTICKED = re.compile(r"`([^`]+)`")
@@ -74,6 +76,7 @@ def _feedback(request: Request, student_id: str, text: str, audio_feedback: bool
     message = create_message(student_id=student_id, payload=MessageRequest(message=text))
     result = create_response(
         student_id=student_id,
+        request=request,
         payload=StudentResponseRequest(
             message_id=message.message_id,
             session_id=message.session_id,
@@ -83,9 +86,7 @@ def _feedback(request: Request, student_id: str, text: str, audio_feedback: bool
     )
     response_audio = ""
     if audio_feedback and result.response_text:
-        response_audio = str(
-            request.url_for("tts").include_query_params(text=result.response_text)
-        )
+        response_audio = str(request.url_for("tts").include_query_params(text=result.response_text))
     return {
         "response_text": display_text(result.response_text),
         "response_audio": response_audio,
@@ -96,9 +97,9 @@ def _feedback(request: Request, student_id: str, text: str, audio_feedback: bool
 @router.post("/generate-feedback-from-text")
 def generate_feedback_from_text(
     request: Request,
-    input: str = Form(...),
-    student_id: str = Form(...),
-    audioFeedback: bool = Form(False),
+    input: Annotated[str, Form()],
+    student_id: Annotated[str, Form()],
+    audioFeedback: Annotated[bool, Form()] = False,
 ) -> dict:
     return _feedback(request, student_id, latest_student_text(input), audioFeedback)
 
@@ -106,9 +107,9 @@ def generate_feedback_from_text(
 @router.post("/generate-feedback-from-voice")
 def generate_feedback_from_voice(
     request: Request,
-    student_id: str = Form(...),
-    audiofile: UploadFile = File(...),
-    audioFeedback: bool = Form(False),
+    student_id: Annotated[str, Form()],
+    audiofile: Annotated[UploadFile, File()],
+    audioFeedback: Annotated[bool, Form()] = False,
 ) -> dict:
     transcript = get_openai_client().audio.transcriptions.create(
         model=TRANSCRIBE_MODEL,
@@ -118,7 +119,7 @@ def generate_feedback_from_voice(
 
 
 @router.get("/tts", name="tts")
-def tts(text: str = Query(..., min_length=1, max_length=TTS_MAX_CHARS)) -> Response:
+def tts(text: Annotated[str, Query(min_length=1, max_length=TTS_MAX_CHARS)]) -> Response:
     """WAV speech for one reply, synthesized locally by Kokoro. Unity loads it with
     AudioType.WAV and lip-syncs to it. Whole-clip rather than streamed: Unity plays
     a clip only once fully downloaded, and a failure surfaces as a 500, not a

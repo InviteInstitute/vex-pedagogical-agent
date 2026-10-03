@@ -1,7 +1,8 @@
 """Download the Kokoro-82M ONNX model + voices into server/models/ (idempotent).
 
-    python scripts/fetch_kokoro.py
+python scripts/fetch_kokoro.py
 """
+
 import urllib.request
 from pathlib import Path
 

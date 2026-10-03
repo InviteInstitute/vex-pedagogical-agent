@@ -1,16 +1,19 @@
 """Trigger-graduation tests (#13 resilience+inactive, #14 explorer+iterative)."""
-from datetime import datetime, timedelta, timezone
 
-from vex_agent.services.proactive import ACTED_TRIGGERS, feedback_classes_for_trigger, is_inactive
+from datetime import UTC, datetime, timedelta
+
+from learner_models.constants import INACTIVE_TRIGGER_SECONDS
+
 from vex_agent.domain.feedback_policy import FeedbackClass
-from vex_agent.triggers.constants import INACTIVE_TRIGGER_SECONDS
+from vex_agent.services.proactive import ACTED_TRIGGERS, feedback_classes_for_trigger, is_inactive
 
 
 def test_resilience_and_inactive_are_acted():
     assert {"resilience", "inactive"} <= ACTED_TRIGGERS
     assert feedback_classes_for_trigger("resilience") == {FeedbackClass.EVIDENCE_BASED_PRAISE}
     assert feedback_classes_for_trigger("inactive") == {
-        FeedbackClass.REASSURE, FeedbackClass.QUESTION,
+        FeedbackClass.REASSURE,
+        FeedbackClass.QUESTION,
     }
 
 
@@ -25,7 +28,7 @@ def test_all_five_triggers_are_acted():
 
 
 def test_is_inactive_threshold():
-    now = datetime(2026, 7, 14, 12, 0, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 7, 14, 12, 0, 0, tzinfo=UTC)
     assert is_inactive(None, now) is False
     assert is_inactive(now - timedelta(seconds=INACTIVE_TRIGGER_SECONDS - 10), now) is False
     assert is_inactive(now - timedelta(seconds=INACTIVE_TRIGGER_SECONDS + 10), now) is True

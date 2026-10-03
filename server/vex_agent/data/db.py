@@ -4,9 +4,9 @@ from typing import Any
 from uuid import UUID
 
 import psycopg
+from dotenv import load_dotenv
 from psycopg.rows import dict_row
 from psycopg.types.json import Json
-from dotenv import load_dotenv
 
 # Domain models + pure mappers this data layer returns/persists (one-way data -> domain;
 # metrics has no app-level top-level imports, so this can't cycle at import time).
@@ -34,6 +34,52 @@ def get_conn() -> psycopg.Connection:
     return psycopg.connect(database_url)
 
 
+def get_ingest_cursor(name: str = "invite_hub") -> dict:
+    """The Invite Hub ingestion cursor (event_logs.ingest_cursor), or {} if unseeded.
+    Returns {last_source_log_id: int|None, last_event_time: datetime|None}. This is
+    the single source of truth for how far log ingestion has progressed -- it
+    replaced the old bind-mounted JSON file (migration 013)."""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT last_source_log_id, last_event_time "
+                "FROM event_logs.ingest_cursor WHERE name = %s",
+                (name,),
+            )
+            row = cur.fetchone()
+    if row is None:
+        return {}
+    return {"last_source_log_id": row[0], "last_event_time": row[1]}
+
+
+def save_ingest_cursor(
+    last_source_log_id: int,
+    last_event_time: datetime | None = None,
+    *,
+    name: str = "invite_hub",
+) -> None:
+    """Advance the ingestion cursor, forward-only: the WHERE guard never lets a stale
+    or out-of-order writer move it backward. Safe for concurrent full-catalog syncs
+    (the daemon and the boot warm-up) because inserts are idempotent (ON CONFLICT on
+    source_log_id) and this upsert only ever moves the pointer ahead."""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO event_logs.ingest_cursor
+                    (name, last_source_log_id, last_event_time, updated_at)
+                VALUES (%s, %s, %s, NOW())
+                ON CONFLICT (name) DO UPDATE SET
+                    last_source_log_id = EXCLUDED.last_source_log_id,
+                    last_event_time = EXCLUDED.last_event_time,
+                    updated_at = NOW()
+                WHERE event_logs.ingest_cursor.last_source_log_id IS NULL
+                   OR EXCLUDED.last_source_log_id >= event_logs.ingest_cursor.last_source_log_id
+                """,
+                (name, last_source_log_id, last_event_time),
+            )
+
+
 def insert_agent_trigger_if_new(
     *,
     student_id: str,
@@ -57,8 +103,13 @@ def insert_agent_trigger_if_new(
                 DO NOTHING
                 RETURNING id
                 """,
-                (student_id, session_id, trigger_type, run_index,
-                 Json(detail) if detail is not None else None),
+                (
+                    student_id,
+                    session_id,
+                    trigger_type,
+                    run_index,
+                    Json(detail) if detail is not None else None,
+                ),
             )
             row = cur.fetchone()
             return row[0] if row else None
@@ -290,7 +341,12 @@ def all_students(recency_hours: float | None = None) -> list[str]:
 
 
 def record_switch(
-    *, student_id: str, session_id: str, switch_kind: str, from_value: str | None, to_value: str | None,
+    *,
+    student_id: str,
+    session_id: str,
+    switch_kind: str,
+    from_value: str | None,
+    to_value: str | None,
 ) -> None:
     """Persist an identity switch (casing flip or classCode change) to switch_events.
     Vendored table from lm-dashboard; additive -- the agent does not act on this yet,
@@ -345,7 +401,11 @@ def get_identity_state(canon: str) -> tuple[str, str | None, datetime] | None:
 
 
 def upsert_identity_state(
-    *, canon: str, student_id: str, class_code: str | None, event_ts: datetime,
+    *,
+    canon: str,
+    student_id: str,
+    class_code: str | None,
+    event_ts: datetime,
 ) -> None:
     """Advance a canonical student's last-seen identity -- forward in event time only,
     so re-processing an older or equal event can't move the pointer backward."""
@@ -380,7 +440,9 @@ def proactive_rev() -> int:
 
 def to_event_record(row: dict[str, Any]) -> EventRecord:
     playground_data_json = (
-        row.get("playground_data_json") if isinstance(row.get("playground_data_json"), dict) else None
+        row.get("playground_data_json")
+        if isinstance(row.get("playground_data_json"), dict)
+        else None
     )
     return EventRecord(
         id=row.get("id"),
@@ -472,3 +534,39 @@ def upsert_snapshot(snapshot: CurrentStateSnapshot) -> None:
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(sql, payload)
+
+
+def record_llm_usage(
+    *, budget_key: str, student_id: str | None, model: str, origin: str, tokens: int
+) -> None:
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO chat.llm_usage (budget_key, student_id, model, origin, tokens)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (budget_key, student_id, model, origin, tokens),
+            )
+
+
+def get_llm_tokens_for_budget_key(budget_key: str) -> int:
+    """Tokens spent by one browser session (its Turnstile cookie lives 12h)."""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT COALESCE(SUM(tokens), 0) FROM chat.llm_usage WHERE budget_key = %s",
+                (budget_key,),
+            )
+            return int(cur.fetchone()[0])
+
+
+def get_llm_tokens_last_day() -> int:
+    """Tokens spent by every browser session in the last 24 hours."""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT COALESCE(SUM(tokens), 0) FROM chat.llm_usage "
+                "WHERE created_at > NOW() - INTERVAL '1 day'"
+            )
+            return int(cur.fetchone()[0])

@@ -8,6 +8,7 @@ Scaffolding text is the study's, adapted to this pipeline: it names this prompt'
 sections, drops the game name (playground comes from catalogs), and drops length rules
 (the main prompt's OUTPUT RULES own length).
 """
+
 import re
 from dataclasses import dataclass
 from enum import Enum

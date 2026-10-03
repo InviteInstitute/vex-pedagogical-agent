@@ -11,8 +11,11 @@ stops the two spellings of one student from oscillating a switch every tick.
 # is caught on the tick after the new spelling's event lands, not intra-batch at ingest.
 # Upgrade path: move detection into the ingest loop for per-event immediacy if needed.
 """
+
 import logging
 from uuid import UUID
+
+from learner_models import detect_switches
 
 from vex_agent.data.db import (
     canon_id,
@@ -21,7 +24,6 @@ from vex_agent.data.db import (
     record_switch,
     upsert_identity_state,
 )
-from vex_agent.triggers.switches import detect_switches
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +42,9 @@ def track_identity_switches(student_id: str, session_id: str) -> list[tuple]:
     if state is not None:
         prev_id, prev_class, prev_ts = state
         if curr_ts > prev_ts:
-            for kind, from_value, to_value in detect_switches(prev_id, prev_class, curr_id, curr_class):
+            for kind, from_value, to_value in detect_switches(
+                prev_id, prev_class, curr_id, curr_class
+            ):
                 record_switch(
                     student_id=canon,
                     session_id=UUID(session_id),

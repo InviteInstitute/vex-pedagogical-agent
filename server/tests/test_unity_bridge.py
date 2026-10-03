@@ -2,6 +2,7 @@
 Conversation, record the student turn, route it through the grounded pipeline, and
 hand back a /tts URL only when audio is on. Driven through the real FastAPI app; the
 pipeline, DB, and speech clients are stubbed."""
+
 import json
 from types import SimpleNamespace
 
@@ -10,15 +11,17 @@ from fastapi.testclient import TestClient
 from vex_agent.api import unity
 from vex_agent.app import app
 
-CONVERSATION = json.dumps({
-    "id": "tab-1",
-    "title": "Chat 1",
-    "messages": [
-        {"speaker": "you", "text": "how do i lift the arm", "isUser": True},
-        {"speaker": "ai", "text": "Which block moves the arm?", "isUser": False},
-        {"speaker": "you", "text": "why won't it move?", "isUser": True},
-    ],
-})
+CONVERSATION = json.dumps(
+    {
+        "id": "tab-1",
+        "title": "Chat 1",
+        "messages": [
+            {"speaker": "you", "text": "how do i lift the arm", "isUser": True},
+            {"speaker": "ai", "text": "Which block moves the arm?", "isUser": False},
+            {"speaker": "you", "text": "why won't it move?", "isUser": True},
+        ],
+    }
+)
 
 
 def _stub_pipeline(monkeypatch, seen):
@@ -26,7 +29,7 @@ def _stub_pipeline(monkeypatch, seen):
         seen["stored"] = (student_id, payload.message)
         return SimpleNamespace(message_id="m1", session_id="sess-1", playground="GO-Mars")
 
-    def fake_create_response(*, student_id, payload):
+    def fake_create_response(*, student_id, payload, request):
         seen["pipeline"] = (student_id, payload.student_message, payload.session_id)
         return SimpleNamespace(
             response_text="Which block runs first?",
@@ -46,10 +49,14 @@ def test_latest_student_text():
 def test_text_endpoint_without_audio(monkeypatch):
     seen = {}
     _stub_pipeline(monkeypatch, seen)
-    reply = TestClient(app).post(
-        "/generate-feedback-from-text",
-        data={"input": CONVERSATION, "student_id": "s1", "audioFeedback": "false"},
-    ).json()
+    reply = (
+        TestClient(app)
+        .post(
+            "/generate-feedback-from-text",
+            data={"input": CONVERSATION, "student_id": "s1", "audioFeedback": "false"},
+        )
+        .json()
+    )
 
     # only the newest student turn is stored and answered, in the resolved session
     assert seen["stored"] == ("s1", "why won't it move?")
@@ -63,13 +70,15 @@ def test_text_endpoint_without_audio(monkeypatch):
 
 def test_text_endpoint_with_audio_links_tts(monkeypatch):
     _stub_pipeline(monkeypatch, {})
-    reply = TestClient(app).post(
-        "/generate-feedback-from-text",
-        data={"input": CONVERSATION, "student_id": "s1", "audioFeedback": "true"},
-    ).json()
-    assert reply["response_audio"] == (
-        "http://testserver/tts?text=Which+block+runs+first%3F"
+    reply = (
+        TestClient(app)
+        .post(
+            "/generate-feedback-from-text",
+            data={"input": CONVERSATION, "student_id": "s1", "audioFeedback": "true"},
+        )
+        .json()
     )
+    assert reply["response_audio"] == ("http://testserver/tts?text=Which+block+runs+first%3F")
 
 
 def test_text_endpoint_rejects_missing_student_turn(monkeypatch):
@@ -92,11 +101,15 @@ def test_voice_endpoint_transcribes_then_feeds_pipeline(monkeypatch):
         )
     )
     monkeypatch.setattr(unity, "get_openai_client", lambda: speech_client)
-    reply = TestClient(app).post(
-        "/generate-feedback-from-voice",
-        data={"student_id": "s1"},
-        files={"audiofile": ("a.wav", b"RIFF", "audio/wav")},
-    ).json()
+    reply = (
+        TestClient(app)
+        .post(
+            "/generate-feedback-from-voice",
+            data={"student_id": "s1"},
+            files={"audiofile": ("a.wav", b"RIFF", "audio/wav")},
+        )
+        .json()
+    )
     assert seen["pipeline"][1] == "spoken words"
     assert reply["response_audio"] == ""
 
@@ -127,10 +140,15 @@ def test_tts_failure_is_500_and_text_is_bounded(monkeypatch):
 
 
 def test_spoken_text_drops_block_markup():
-    assert unity.spoken_text(
-        "Connect `drive [forward/reverse] for [number] [mm/inches]` under `when started`."
-    ) == "Connect drive for under when started."
+    assert (
+        unity.spoken_text(
+            "Connect `drive [forward/reverse] for [number] [mm/inches]` under `when started`."
+        )
+        == "Connect drive for under when started."
+    )
 
 
 def test_display_text_bolds_block_names_for_unity():
-    assert unity.display_text("Use `turn [right/left]` next.") == "Use <b>turn [right/left]</b> next."
+    assert (
+        unity.display_text("Use `turn [right/left]` next.") == "Use <b>turn [right/left]</b> next."
+    )

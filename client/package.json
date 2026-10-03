@@ -7,14 +7,26 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "production": "vite serve --host 0.0.0.0 --port 5173"
+    "production": "vite serve --host 0.0.0.0 --port 5173",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\" index.html",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css}\" index.html"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@phosphor-icons/react": "^2.1.10",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^5.4.19"
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.6.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "vite": "^7.0.1",
+    "vitest": "^2.1.9"
   }
 }

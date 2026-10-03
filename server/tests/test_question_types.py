@@ -1,5 +1,6 @@
 """Question taxonomy ported from the study repo: classifier output parsing (falls back
 to the safe General type) and the scaffolding reaching the main feedback prompt."""
+
 from vex_agent.domain.context_builder import (
     NO_QUESTION_TYPE,
     build_feedback_prompt_from_classes,
@@ -45,8 +46,13 @@ def test_classify_question_runs_classifier_prompt(monkeypatch):
 
 def _prompt(question_type):
     return build_feedback_prompt_from_classes(
-        task="t", student_message="m", available_blocks=["drive"], current_program="p",
-        situation="s", recent_messages=[], feedback_classes={FeedbackClass.NUDGE},
+        task="t",
+        student_message="m",
+        available_blocks=["drive"],
+        current_program="p",
+        situation="s",
+        recent_messages=[],
+        feedback_classes={FeedbackClass.NUDGE},
         question_type=question_type,
     )
 
