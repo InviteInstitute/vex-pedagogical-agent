@@ -67,8 +67,10 @@ the site.
 Build on any machine with Unity (above, or **File > Build Settings > WebGL** under any
 name; uncompressed, or compressed with Decompression Fallback on). Copy the build folder
 to the server and install it where the page loads it. The script normalizes the build's
-file names and swaps it in atomically, so no restart is needed and the page picks it up
-on the next load:
+file names, writes `build.json` with a content version, and swaps it in atomically. The
+page loads every build file as `?v=<version>` and nginx serves `/webgl/` as `no-cache`,
+so neither Cloudflare nor a browser can serve a stale or half-updated build. No restart
+is needed; the page picks it up on the next load:
 
 ```bash
 rsync -av path/to/YourBuild/ SERVER:~/avatar-build/

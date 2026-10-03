@@ -51,35 +51,46 @@
     });
 
     const msg = document.getElementById("msg");
-    const script = document.createElement("script");
-    script.src = `${BUILD_DIR}/${BUILD_NAME}.loader.js`;
-    script.onload = () => {
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: `${BUILD_DIR}/${BUILD_NAME}.data`,
-        frameworkUrl: `${BUILD_DIR}/${BUILD_NAME}.framework.js`,
-        codeUrl: `${BUILD_DIR}/${BUILD_NAME}.wasm`,
-        streamingAssetsUrl: `build_out/${BUILD_NAME}/StreamingAssets`,
-        productName: "VEX Conversation Agent",
-      }).then((unityInstance) => {
-        msg.remove();
-        // ChatLLM prepends "/" to endpoint, so pass it WITHOUT a leading slash.
-        const cfg = {
-          serverurl,
-          endpoint: "generate-feedback-from-text",
-          student_id,
-          audioFeedback,
-          // In the corner over VEXcode VR: no sidebar, transparent behind the avatar.
-          compact: embedded ? "true" : "false",
-        };
-        unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
-        unity = unityInstance;
-        if (embedded) window.parent.postMessage({ type: "avatar-ready" }, location.origin);
-      }).catch((e) => { msg.textContent = "Unity load failed: " + e; });
+    const missing = () => {
+      msg.textContent = `No avatar build in build_out/${BUILD_NAME}/ - see webgl/README.md`;
     };
-    script.onerror = () => {
-      msg.textContent = `Missing ${BUILD_DIR}/${BUILD_NAME}.loader.js - build the Unity project first (see webgl/README.md)`;
-    };
-    document.body.appendChild(script);
+    // build.json (written by install_build.sh) names this build's version. Fetched
+    // uncached, then every build file is requested as ?v=<version>, so a fresh build
+    // never mixes with copies a CDN cached under the same names.
+    fetch(`build_out/${BUILD_NAME}/build.json?t=${Date.now()}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then(({ version }) => loadBuild(`?v=${encodeURIComponent(version)}`))
+      .catch(missing);
+
+    function loadBuild(v) {
+      const script = document.createElement("script");
+      script.src = `${BUILD_DIR}/${BUILD_NAME}.loader.js${v}`;
+      script.onload = () => {
+        createUnityInstance(document.querySelector("#unity-canvas"), {
+          dataUrl: `${BUILD_DIR}/${BUILD_NAME}.data${v}`,
+          frameworkUrl: `${BUILD_DIR}/${BUILD_NAME}.framework.js${v}`,
+          codeUrl: `${BUILD_DIR}/${BUILD_NAME}.wasm${v}`,
+          streamingAssetsUrl: `build_out/${BUILD_NAME}/StreamingAssets`,
+          productName: "VEX Conversation Agent",
+        }).then((unityInstance) => {
+          msg.remove();
+          // ChatLLM prepends "/" to endpoint, so pass it WITHOUT a leading slash.
+          const cfg = {
+            serverurl,
+            endpoint: "generate-feedback-from-text",
+            student_id,
+            audioFeedback,
+            // In the corner over VEXcode VR: no sidebar, transparent behind the avatar.
+            compact: embedded ? "true" : "false",
+          };
+          unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
+          unity = unityInstance;
+          if (embedded) window.parent.postMessage({ type: "avatar-ready" }, location.origin);
+        }).catch((e) => { msg.textContent = "Unity load failed: " + e; });
+      };
+      script.onerror = missing;
+      document.body.appendChild(script);
+    }
   </script>
 </body>
 </html>

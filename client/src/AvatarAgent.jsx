@@ -6,13 +6,15 @@ import { useEffect, useRef, useState } from "react";
 // that arrive on the push stream, so the avatar says those too.
 
 export const AVATAR_PAGE = "/webgl/";
-// Present once a Unity WebGL build has been dropped into webgl/build_out/.
-export const AVATAR_BUILD_PROBE =
-  "/webgl/build_out/ai-conversation-agent/Build/ai-conversation-agent.loader.js";
+// Written by webgl/install_build.sh once a Unity WebGL build is installed.
+export const AVATAR_BUILD_PROBE = "/webgl/build_out/ai-conversation-agent/build.json";
 
 export async function isAvatarBuildAvailable(fetchImpl = fetch) {
   try {
-    const response = await fetchImpl(AVATAR_BUILD_PROBE, { method: "HEAD" });
+    // Uncached at every layer: a CDN copy must not outlive a removed build.
+    const response = await fetchImpl(`${AVATAR_BUILD_PROBE}?t=${Date.now()}`, {
+      cache: "no-store",
+    });
     return response.ok;
   } catch {
     return false;

@@ -5,7 +5,7 @@ import AvatarAgent, { AVATAR_BUILD_PROBE, isAvatarBuildAvailable } from "./Avata
 
 describe("isAvatarBuildAvailable", () => {
   it("is true only when the WebGL build is deployed", async () => {
-    const fetchImpl = vi.fn((url) => Promise.resolve({ ok: url === AVATAR_BUILD_PROBE }));
+    const fetchImpl = vi.fn((url) => Promise.resolve({ ok: url.startsWith(AVATAR_BUILD_PROBE) }));
     expect(await isAvatarBuildAvailable(fetchImpl)).toBe(true);
     expect(await isAvatarBuildAvailable(() => Promise.resolve({ ok: false }))).toBe(false);
     expect(await isAvatarBuildAvailable(() => Promise.reject(new Error("offline")))).toBe(false);

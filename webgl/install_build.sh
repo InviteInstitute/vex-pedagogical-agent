@@ -39,10 +39,14 @@ done
 if [ -d "$SRC/StreamingAssets" ]; then
   cp -r "$SRC/StreamingAssets" "$DEST.new/StreamingAssets"
 fi
+# The page loads every build file as ?v=<version>, so a new build gets URLs no cache
+# (Cloudflare holds .js for hours) has seen; build.json itself is fetched uncached.
+version=$(cat "$DEST.new"/Build/* | sha256sum | cut -c1-12)
+printf '{"version": "%s", "source": "%s"}\n' "$version" "$base" > "$DEST.new/build.json"
 chmod -R a+rX "$DEST.new"
 
 rm -rf "$DEST.old"
 [ -d "$DEST" ] && mv "$DEST" "$DEST.old"
 mv "$DEST.new" "$DEST"
 rm -rf "$DEST.old"
-echo "Installed $base from $SRC into $DEST"
+echo "Installed $base (version $version) from $SRC into $DEST"
