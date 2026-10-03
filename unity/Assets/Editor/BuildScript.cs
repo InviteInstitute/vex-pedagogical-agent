@@ -22,7 +22,7 @@ public static class BuildScript
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
 
         string projectDir = Directory.GetParent(Application.dataPath).FullName;         // .../unity
-        string repoDir = Directory.GetParent(projectDir).FullName;                      // .../vex-agent-unity-integration
+        string repoDir = Directory.GetParent(projectDir).FullName;                      // .../vex-pedagogical-agent
         string outDir = Path.Combine(repoDir, "webgl", "build_out", BuildLeafName);
 
         BuildReport report = BuildPipeline.BuildPlayer(
