@@ -65,6 +65,10 @@ public class ChatLLM : MonoBehaviour
                 audioFeedback = bool.Parse(serverInfo.audioFeedback);
             }
             Debug.Log($"ReceiveConfigJson: Audio feedback set to {audioFeedback}");
+            if (serverInfo.compact == "true" && ChatWindow.Instance != null)
+            {
+                ChatWindow.Instance.SetCompact(true);
+            }
         }
         catch (Exception e)
         {
@@ -476,5 +480,6 @@ public class ChatLLM : MonoBehaviour
         public string endpoint;
         public string audioFeedback;
         public string student_id;
+        public string compact;
     }
 }

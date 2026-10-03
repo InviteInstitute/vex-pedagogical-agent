@@ -63,7 +63,14 @@
       }).then((unityInstance) => {
         msg.remove();
         // ChatLLM prepends "/" to endpoint, so pass it WITHOUT a leading slash.
-        const cfg = { serverurl, endpoint: "generate-feedback-from-text", student_id, audioFeedback };
+        const cfg = {
+          serverurl,
+          endpoint: "generate-feedback-from-text",
+          student_id,
+          audioFeedback,
+          // In the corner over VEXcode VR: no sidebar, transparent behind the avatar.
+          compact: embedded ? "true" : "false",
+        };
         unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
         unity = unityInstance;
         if (embedded) window.parent.postMessage({ type: "avatar-ready" }, location.origin);

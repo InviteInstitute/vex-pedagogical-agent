@@ -63,6 +63,8 @@ public class ChatWindow : MonoBehaviour
     private List<Conversation> conversations = new List<Conversation>();
     private Conversation activeConversation;
     private bool sidebarExpanded = true;
+    // Set by SetCompact; read in Start too, since the config can arrive either side of it.
+    private bool isCompact = false;
     private float sidebarWidth = 320f;
 
     // Agent Centering State
@@ -160,13 +162,14 @@ public class ChatWindow : MonoBehaviour
             inputField.onSubmit.AddListener((val) => SendMessageFromInput());
         }
 
-        // Ensure agent container background matches the blue header color
+        // Ensure agent container background matches the blue header color (clear when
+        // compact, so the page shows through behind the avatar)
         if (agentContainer != null)
         {
             Image agentBg = agentContainer.GetComponent<Image>();
             if (agentBg != null)
             {
-                agentBg.color = vexBlueHeader;
+                agentBg.color = isCompact ? Color.clear : vexBlueHeader;
             }
         }
 
@@ -483,6 +486,36 @@ public class ChatWindow : MonoBehaviour
         return sb.ToString().TrimEnd();
     }
 
+    // Compact mode for when the page embeds the avatar in a corner over VEXcode VR
+    // (webgl/index.html ?embed=1): no conversation sidebar, and nothing painted behind
+    // the avatar, so the playground shows through (TransparentBackground.jslib keeps
+    // the canvas alpha).
+    public void SetCompact(bool compact)
+    {
+        if (!compact)
+        {
+            return;
+        }
+        isCompact = true;
+        if (sidebarExpanded)
+        {
+            ToggleSidebar();
+        }
+        if (agentContainer != null)
+        {
+            Image agentBg = agentContainer.GetComponent<Image>();
+            if (agentBg != null)
+            {
+                agentBg.color = Color.clear;
+            }
+        }
+        if (Camera.main != null)
+        {
+            Camera.main.clearFlags = CameraClearFlags.SolidColor;
+            Camera.main.backgroundColor = Color.clear;
+        }
+    }
+
     public void ToggleSidebar()
     {
         sidebarExpanded = !sidebarExpanded;
@@ -540,9 +573,11 @@ public class ChatWindow : MonoBehaviour
         // Color bubbles using VEXcode VR scheme
         textImage.color = isUser ? vexBubbleUser : vexBubbleAI;
 
-        // Set layout rules for the bubble card
+        // Set layout rules for the bubble card: at most 600px, and never wider than the
+        // message list allows (a fixed 600 clipped text in a narrow window).
         LayoutElement layoutElement = textBubble.AddComponent<LayoutElement>();
-        layoutElement.preferredWidth = 600f; // Limit maximum bubble width
+        float listWidth = chatContent.GetComponent<RectTransform>().rect.width - rowLayout.padding.horizontal;
+        layoutElement.preferredWidth = listWidth > 0f ? Mathf.Min(600f, listWidth * 0.85f) : 600f;
 
         VerticalLayoutGroup bubbleLayout = textBubble.AddComponent<VerticalLayoutGroup>();
         bubbleLayout.childControlHeight = true;
