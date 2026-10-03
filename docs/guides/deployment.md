@@ -72,17 +72,34 @@ The production build reads `client/.env.production`, which pins `VITE_API_BASE_U
 
 ## The nginx Front
 
-nginx terminates TLS and splits traffic: the static SPA at `/`, and the API for the
-proxied paths.
+nginx terminates TLS and splits traffic: the static SPA at `/`, the avatar page under
+`/webgl/`, and the API for the proxied paths. Use the stack's `API_PORT` (8003 on the
+shared server, where `vex-chat-agent` holds 8001). This is the shape of the live config
+at `/etc/nginx/sites-available/agent.inviteai.org`, minus the proxy headers and the TLS
+lines certbot adds:
 
 ```nginx
 server {
     server_name agent.inviteai.org;
     root /var/www/vex-pedagogical-agent/client/dist;
 
-    location /v1/     { proxy_pass http://127.0.0.1:8001; }   # student + stream API (bot-gated)
-    location /admin/  { proxy_pass http://127.0.0.1:8001; }   # admin tick
-    location = /healthz { proxy_pass http://127.0.0.1:8001; } # health check
+    location /v1/     { proxy_pass http://127.0.0.1:8003; }   # student + stream API (bot-gated)
+    location /admin/  { proxy_pass http://127.0.0.1:8003; }   # admin tick
+    location = /healthz { proxy_pass http://127.0.0.1:8003; } # health check
+
+    # The Unity avatar's bridge (outside /v1). Voice uploads exceed the 1MB default.
+    location ~ ^/(generate-feedback-from-text|generate-feedback-from-voice|tts)$ {
+        proxy_pass http://127.0.0.1:8003;
+        proxy_set_header X-Forwarded-Proto $scheme;   # so /tts links come out https
+        client_max_body_size 10m;
+    }
+
+    # The avatar page and its WebGL build, replaced in place by install_build.sh.
+    location /webgl/ {
+        alias /var/www/vex-pedagogical-agent/webgl/;
+        add_header Cache-Control "no-cache" always;
+    }
+
     location /        { try_files $uri /index.html; }         # the SPA
 }
 ```
@@ -95,7 +112,7 @@ server {
 ## Health Check
 
 ```bash
-curl -s http://127.0.0.1:8001/healthz
+curl -s http://127.0.0.1:${API_PORT:-8001}/healthz
 # {"status":"ok"}
 ```
 
