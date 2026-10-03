@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afd7beaf997d5894887851eb117645a8, type: 3}
+  m_Name: preset_06
+  m_EditorClassIdentifier: 
+  _id: preset06
+  _longName: Preset 06
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 73cdfa21558f94649b4922090dde08c8, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _settings:
+    name: 
+    notes: 
+    preset: {fileID: 11400000}
+    useWheelchair: 0
+    face: {fileID: 11400000, guid: 9c696fb9df5b7d24da3e264100f165f6, type: 2}
+    skinColor: {fileID: 11400000, guid: f405b8e7cc2deb54090205449a1f7d6a, type: 2}
+    hair: {fileID: 11400000, guid: 35e17589562369e49b41f7b673e5ad42, type: 2}
+    hairColor: {fileID: 11400000, guid: 05c9ce470e2a88a44adbc299a4e3796c, type: 2}
+    eyeShape: {fileID: 11400000, guid: 24fc69225271f7e40bd741493a0e1cae, type: 2}
+    eyes: {fileID: 11400000, guid: 522a99d24b69ec44b81870112c0a6c41, type: 2}
+    outfit: {fileID: 11400000, guid: b2bf88f830c70af40892573476bfc00d, type: 2}
+    bodyType: {fileID: 11400000, guid: cdf61f6c34b52c844a41a517a05b1ee9, type: 2}
+    shoes: {fileID: 11400000, guid: 64123c9af77702a4da4cfea29b1471af, type: 2}
+    accessories: []
+    actions: []
+    decal: {fileID: 0}

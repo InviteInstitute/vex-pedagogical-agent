@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c7ac33998cead4eaa316830afafde3, type: 3}
+  m_Name: hair_03
+  m_EditorClassIdentifier: 
+  _id: hair03
+  _longName: Hairstyle 03 (Curly Shoulder Length)
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: fb00aca4d6a75434ab5987b1e8715579, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _mesh: {fileID: -4759927973213655684, guid: d066107616a7d6d4aa60904219fc1783, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 176766e6fc79fcb4a9d38240bfa70619, type: 2}
+  _hairPrefab: {fileID: 4147441949005260938, guid: 6ba60c77847660149a97206cf0ae0912, type: 3}
+  _childPrefab: {fileID: 0}

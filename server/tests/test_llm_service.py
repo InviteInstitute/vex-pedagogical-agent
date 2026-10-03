@@ -13,8 +13,9 @@ def test_load_navigator_credentials_from_env(monkeypatch):
 def test_enforce_student_response_length():
     assert ls.enforce_student_response_length("") == ""
     assert ls.enforce_student_response_length("One two three. Four five.").startswith("One two three")
-    long = " ".join(str(i) for i in range(40))
-    assert len(ls.enforce_student_response_length(long).split()) <= 22
+    long = " ".join(str(i) for i in range(60))
+    assert len(ls.enforce_student_response_length(long).split()) <= 40
+    assert ls.enforce_student_response_length("One. Two. Three.") == "One. Two."
 
 
 def test_execute_prompt_calls_client(monkeypatch):
@@ -61,9 +62,9 @@ def test_credentials_missing_raises(monkeypatch):
 
 
 def test_generate_main_llm_response_sanitizes_and_trims(monkeypatch):
-    # a leaked, multi-sentence model output -> cleaned + trimmed to one sentence
+    # a leaked, multi-sentence model output -> cleaned + trimmed to two sentences
     monkeypatch.setattr(ls, "execute_prompt",
-                        lambda **k: 'Encouragement: "You are close. Keep going and try more."')
+                        lambda **k: 'Encouragement: "You are close. Keep going. Try one more run."')
     out = ls.generate_main_llm_response(
         task="t", student_message="m", available_blocks=["drive"],
         current_program="when started\ndrive for forward, amount 200",
@@ -72,4 +73,5 @@ def test_generate_main_llm_response_sanitizes_and_trims(monkeypatch):
     )
     text = out["response_text"]
     assert "Encouragement" not in text and '"' not in text
-    assert text.count(".") <= 1  # trimmed to one sentence
+    assert text == "You are close. Keep going."  # trimmed to two sentences
+

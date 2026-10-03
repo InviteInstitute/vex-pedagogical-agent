@@ -64,6 +64,7 @@ class StudentResponseResponse(BaseModel):
     response_text: str
     llm_model: str | None = None
     llm_prompt: str | None = None
+    question_type: str | None = None
     status: Literal["received"]
 
 

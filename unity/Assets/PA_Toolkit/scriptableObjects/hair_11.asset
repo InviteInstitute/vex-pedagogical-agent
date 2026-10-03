@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c7ac33998cead4eaa316830afafde3, type: 3}
+  m_Name: hair_11
+  m_EditorClassIdentifier: 
+  _id: hair11
+  _longName: Hairstyle 11 (Short Cut)
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 1a481bec62a16ea41af094e46080404b, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _mesh: {fileID: 7452647206290079290, guid: c5294d4893b69404694d2da412ae1bd5, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 7026ec5b329d03344b3f0889ef7b6ed3, type: 2}
+  _hairPrefab: {fileID: -1556692167812871363, guid: 068bb1df4e7ed824389d9d40a517c769, type: 3}
+  _childPrefab: {fileID: 0}

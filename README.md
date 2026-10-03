@@ -189,6 +189,27 @@ The browser subscribes automatically once a student is set. To watch it from the
 curl -N http://127.0.0.1:8000/v1/students/STUDENT_ID/stream
 ```
 
+## Question Types (Two-Agent Scaffolding)
+
+Ported from [VEX-Unity-Agent-Study-Integration](https://github.com/InviteInstitute/VEX-Unity-Agent-Study-Integration). Every student message is first classified by a small LLM call into one of four question types (`server/vex_agent/domain/question_types.py`):
+
+0. Task / Goal Understanding
+1. Action / Strategy / Solution Support
+2. Debugging / Problem Diagnosis
+3. General / Unclear Help-Seeking (also the fallback)
+
+The type's scaffolding guidance joins the grounded feedback prompt. The scaffolding decides *what* to say next, and the feedback classes from the learner-state policy decide *how* to say it. The type is stored in `chat.messages.question_type` (migration 012) and returned as `question_type` by `/v1/students/{id}/responses`. Proactive messages have no student question, so they skip classification.
+
+## Unity Avatar
+
+`unity/` is the embodied 3D tutor (Unity 2022.3.40f1): lip-synced speech (uLipSync), beat gestures, and a VEX-themed chat window. It talks to this backend through a flat bridge (`server/vex_agent/api/unity.py`):
+
+- `POST /generate-feedback-from-text`: form fields `input` (Unity Conversation JSON), `student_id`, `audioFeedback`. Returns `{response_text, response_audio, question_type}`.
+- `POST /generate-feedback-from-voice`: transcribes `audiofile`, then answers the same way.
+- `GET /tts?text=...`: WAV speech, synthesized locally in the backend by Kokoro-82M (`server/vex_agent/services/tts.py`). Fetch the model once with `python server/scripts/fetch_kokoro.py`. About 3s for a full 40-word reply on an 8-core CPU, no GPU or API key needed.
+
+Build and run steps are in [webgl/README.md](webgl/README.md).
+
 ## Deployment
 
 ### Frontend on Vercel

@@ -1,0 +1,1684 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13a6d910f318dc64ea51a91ff1ac9248, type: 3}
+  m_Name: bodyType_05
+  m_EditorClassIdentifier: 
+  _id: body05
+  _longName: Body 05
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: b05b63426a6ae744da538fc390cd42cd, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _index: 4
+  leftEyePosition: {x: -0.07085, y: 0.065249, z: 0.033123}
+  standingAnimator: {fileID: 22100000, guid: 9defee763c71eb74f930ef7b9b47fa28, type: 2}
+  wheelchairAnimator: {fileID: 22100000, guid: 7c5f286f574c07c4ca7aa8c17ec0d493, type: 2}
+  _colliderDataByBodytype:
+  - bodyType: 4
+    _colliderData:
+    - id: head/col
+      localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+      localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+      localScale: {x: 1, y: 1, z: 1}
+      center: {x: -0.07, y: 0.035, z: 0}
+      radius: 0.08
+      height: 0.225
+      direction: 0
+    - id: neck/col
+      localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+      localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+      localScale: {x: 1, y: 1, z: 1}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.06
+      height: 0.125
+      direction: 0
+    - id: leftShoulder/col
+      localPosition: {x: -0.012, y: 0.03, z: -0.001}
+      localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+      localScale: {x: 1, y: 1, z: 1}
+      center: {x: -0.03, y: -0.01, z: 0.01}
+      radius: 0.065
+      height: 0.175
+      direction: 0
+    - id: rightShoulder/col
+      localPosition: {x: 0.002, y: 0.037, z: 0.004}
+      localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+      localScale: {x: 1, y: 1, z: 1}
+      center: {x: -0.045, y: -0.01, z: -0.01}
+      radius: 0.065
+      height: 0.175
+      direction: 0
+    - id: spine/col
+      localPosition: {x: -0.023, y: -0.002, z: 0.001}
+      localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+      localScale: {x: 1, y: 1, z: 1}
+      center: {x: -0.09, y: 0.009, z: 0}
+      radius: 0.1
+      height: 0.275
+      direction: 2
+    - id: acc_col_03/col (right)
+      localPosition: {x: -0.0789, y: 0.0556, z: -0.0153}
+      localRotation: {x: 0.3813804, y: -0.008419543, z: -0.00011765957, w: 0.9243799}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.05
+      height: 0.275
+      direction: 1
+    - id: acc_col_03/col (left)
+      localPosition: {x: -0.0775, y: -0.0038, z: 0.0676}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.05
+      height: 0.275
+      direction: 1
+    - id: acc_col_03/col (front)_top
+      localPosition: {x: -0.0806, y: 0.0775, z: 0.0597}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.05
+      height: 0.275
+      direction: 2
+    - id: acc_col_03/col (front)_bottom
+      localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.05
+      height: 0.275
+      direction: 2
+    - id: acc_col_09/col (main)
+      localPosition: {x: 0.102, y: -0.0029, z: 0.016}
+      localRotation: {x: 0.0788516, y: 0.033189904, z: -0.15986733, w: 0.98342425}
+      localScale: {x: 0.5928053, y: 0.59280527, z: 0.5928052}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.26
+      height: 0.25
+      direction: 1
+    - id: acc_col_01/col (main)
+      localPosition: {x: 0.0671, y: 0.0055, z: -0.0032}
+      localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.2
+      height: 0.25
+      direction: 1
+    - id: acc_col_01/col (left)
+      localPosition: {x: 0.0758, y: 0.0902, z: 0.0698}
+      localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.08
+      height: 0.1
+      direction: 1
+    - id: acc_col_01/col (right)
+      localPosition: {x: 0.0631, y: 0.1011, z: -0.0407}
+      localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.1
+      height: 0.1
+      direction: 1
+    - id: acc_col_02/col (left)
+      localPosition: {x: -0.0743, y: -0.0182, z: 0.0865}
+      localRotation: {x: 0.20585896, y: -0.0045461035, z: 0.0000017881385, w: 0.9785712}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.03
+      height: 0.3
+      direction: 1
+    - id: acc_col_02/col (right)
+      localPosition: {x: -0.0747, y: 0.0776, z: -0.0243}
+      localRotation: {x: 0.36386743, y: -0.0075262184, z: 0.00010293722, w: 0.9314203}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.03
+      height: 0.25
+      direction: 1
+    - id: acc_col_02/col (front)_top
+      localPosition: {x: -0.0753, y: 0.0838, z: 0.0644}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.03
+      height: 0.3
+      direction: 2
+    - id: acc_col_02/col (front)_bottom
+      localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.045
+      height: 0.2
+      direction: 2
+    - id: acc_col_04/col (right)
+      localPosition: {x: -0.0709, y: 0.0863, z: -0.0438}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.04
+      height: 0.25
+      direction: 1
+    - id: acc_col_04/col (left)
+      localPosition: {x: -0.0827, y: -0.0132, z: 0.0814}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.04
+      height: 0.25
+      direction: 1
+    - id: acc_col_04/col (front)_top
+      localPosition: {x: -0.0767, y: 0.086, z: 0.0657}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.04
+      height: 0.3
+      direction: 2
+    - id: acc_col_04/col (front)_bottom
+      localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+      localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+      localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.03
+      height: 0.25
+      direction: 2
+    - id: acc_col_10/col (right)
+      localPosition: {x: -0.0813, y: 0.076, z: -0.0409}
+      localRotation: {x: 0.27236605, y: -0.005913018, z: -0.00009897349, w: 0.9621756}
+      localScale: {x: 0.48276865, y: 0.48276865, z: 0.48276865}
+      center: {x: 0, y: 0, z: 0}
+      radius: 0.03
+      height: 0.25
+      direction: 1
+  _colliderDataLocations:
+    _keyValuePairs:
+    - key: body05
+      value: agentColliderData/body05.agentCol
+    - key: body05_accessory05
+      value: agentColliderData/body05_accessory05.agentCol
+    - key: body05_hair02_acc-01
+      value: agentColliderData/body05_hair02_acc-01.agentCol
+    - key: body05_hair02_acc-02
+      value: agentColliderData/body05_hair02_acc-02.agentCol
+    - key: body05_hair02_acc-04
+      value: agentColliderData/body05_hair02_acc-04.agentCol
+    - key: body05_hair02_acc-10
+      value: agentColliderData/body05_hair02_acc-10.agentCol
+    - key: body05_hair03_acc-01
+      value: agentColliderData/body05_hair03_acc-01.agentCol
+    - key: body05_hair04_acc-01
+      value: agentColliderData/body05_hair04_acc-01.agentCol
+    - key: body05_hair04_acc-02
+      value: agentColliderData/body05_hair04_acc-02.agentCol
+    - key: body05_hair09_acc-02
+      value: agentColliderData/body05_hair09_acc-02.agentCol
+    - key: body05_hair09_acc-03
+      value: agentColliderData/body05_hair09_acc-03.agentCol
+    - key: body05_hair09_acc-10
+      value: agentColliderData/body05_hair09_acc-10.agentCol
+    - key: body05_hair04_acc-03
+      value: agentColliderData/body05_hair04_acc-03.agentCol
+    - key: body05_hair04_acc-04
+      value: agentColliderData/body05_hair04_acc-04.agentCol
+    - key: body05_hair11_acc-04
+      value: agentColliderData/body05_hair11_acc-04.agentCol
+    - key: body05_hair11_acc-02
+      value: agentColliderData/body05_hair11_acc-02.agentCol
+    - key: body05_hair11_acc-03
+      value: agentColliderData/body05_hair11_acc-03.agentCol
+    - key: body05_hair11_acc-10
+      value: agentColliderData/body05_hair11_acc-10.agentCol
+  colliderDataCache:
+    _keyValuePairs:
+    - key: agentColliderData/body05.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0024, y: 0.0222, z: -0.0018}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.0725
+          height: 0.23
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_03/col (right)
+          localPosition: {x: -0.0789, y: 0.0556, z: -0.0153}
+          localRotation: {x: 0.3813804, y: -0.008419543, z: -0.00011765957, w: 0.9243799}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (left)
+          localPosition: {x: -0.0775, y: -0.0038, z: 0.0676}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (front)_top
+          localPosition: {x: -0.0806, y: 0.0775, z: 0.0597}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+        - id: acc_col_03/col (front)_bottom
+          localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+        - id: acc_col_09/col (main)
+          localPosition: {x: 0.102, y: -0.0029, z: 0.016}
+          localRotation: {x: 0.0788516, y: 0.033189904, z: -0.15986733, w: 0.98342425}
+          localScale: {x: 0.5928053, y: 0.59280527, z: 0.5928052}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.26
+          height: 0.25
+          direction: 1
+        - id: acc_col_01/col (main)
+          localPosition: {x: 0.0671, y: 0.0055, z: -0.0032}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.2
+          height: 0.25
+          direction: 1
+        - id: acc_col_01/col (left)
+          localPosition: {x: 0.0758, y: 0.0902, z: 0.0698}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.08
+          height: 0.1
+          direction: 1
+        - id: acc_col_01/col (right)
+          localPosition: {x: 0.0631, y: 0.1011, z: -0.0407}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.1
+          height: 0.1
+          direction: 1
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0743, y: -0.0182, z: 0.0865}
+          localRotation: {x: 0.20585896, y: -0.0045461035, z: 0.0000017881385, w: 0.9785712}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.0747, y: 0.0776, z: -0.0243}
+          localRotation: {x: 0.36386743, y: -0.0075262184, z: 0.00010293722, w: 0.9314203}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0753, y: 0.0838, z: 0.0644}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.045
+          height: 0.2
+          direction: 2
+        - id: acc_col_04/col (right)
+          localPosition: {x: -0.0709, y: 0.0863, z: -0.0438}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (left)
+          localPosition: {x: -0.0827, y: -0.0132, z: 0.0814}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (front)_top
+          localPosition: {x: -0.0767, y: 0.086, z: 0.0657}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (front)_bottom
+          localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+        - id: acc_col_10/col (right)
+          localPosition: {x: -0.0856, y: 0.0767, z: -0.0534}
+          localRotation: {x: 0.26160032, y: -0.020914743, z: 0.015047427, w: 0.96483237}
+          localScale: {x: 0.48276865, y: 0.48276865, z: 0.48276865}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.0275
+          height: 0.25
+          direction: 1
+    - key: agentColliderData/body05_accessory05.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0181, y: -0.0069, z: -0.0001}
+          localRotation: {x: 0, y: 0, z: 0, w: 1}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.085
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: 0.0086, y: 0.018, z: -0.0053}
+          localRotation: {x: -0.015915154, y: 0.0010902879, z: -0.000051975243, w: 0.9998728}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.325
+          direction: 2
+        - id: acc_col_04/col (right)
+          localPosition: {x: -0.0701, y: 0.0719, z: -0.0057}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.00000014901161, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (left)
+          localPosition: {x: -0.0725, y: -0.0009, z: 0.0768}
+          localRotation: {x: 0.31064498, y: -0.0067961365, z: -0.00000014901161, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (front)_top
+          localPosition: {x: -0.0897, y: 0.0867, z: 0.066}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.00000014901161, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+        - id: acc_col_04/col (front)_bottom
+          localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0757, y: -0.0099, z: 0.0812}
+          localRotation: {x: 0.28478083, y: -0.0062307557, z: 0.000000029802317, w: 0.95857245}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.0811, y: 0.0641, z: -0.0279}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0777, y: 0.0788, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.26
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.2
+          direction: 2
+        - id: acc_col_03/col (right)
+          localPosition: {x: -0.0784, y: 0.0621, z: -0.0244}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_03/col (left)
+          localPosition: {x: -0.0775, y: -0.0071, z: 0.079}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_03/col (front)_top
+          localPosition: {x: -0.0738, y: 0.0774, z: 0.0597}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.25
+          direction: 2
+        - id: acc_col_03/col (front)_bottom
+          localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.2
+          direction: 2
+    - key: agentColliderData/body05_hair02_acc-01.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_01/col (main)
+          localPosition: {x: 0.0671, y: 0.0055, z: -0.0032}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.2
+          height: 0.25
+          direction: 1
+        - id: acc_col_01/col (left)
+          localPosition: {x: 0.0758, y: 0.0902, z: 0.0698}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.08
+          height: 0.1
+          direction: 1
+        - id: acc_col_01/col (right)
+          localPosition: {x: 0.0631, y: 0.1011, z: -0.0407}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.1
+          height: 0.1
+          direction: 1
+    - key: agentColliderData/body05_hair02_acc-02.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0743, y: -0.0166, z: 0.0842}
+          localRotation: {x: 0.2329559, y: -0.006348429, z: -0.0005017219, w: 0.97246647}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.0747, y: 0.0776, z: -0.0243}
+          localRotation: {x: 0.36386743, y: -0.0075262184, z: 0.00010293722, w: 0.9314203}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0753, y: 0.0838, z: 0.0644}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.27
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.045
+          height: 0.2
+          direction: 2
+    - key: agentColliderData/body05_hair02_acc-04.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (right)
+          localPosition: {x: -0.0713, y: 0.0707, z: -0.0214}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (left)
+          localPosition: {x: -0.075, y: -0.0121, z: 0.0792}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (front)_top
+          localPosition: {x: -0.0769, y: 0.0798, z: 0.0629}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.28
+          direction: 2
+        - id: acc_col_04/col (front)_bottom
+          localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+    - key: agentColliderData/body05_hair02_acc-10.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_10/col (right)
+          localPosition: {x: -0.0906, y: 0.0725, z: -0.055}
+          localRotation: {x: 0.22743362, y: 0.05942624, z: 0.124821946, w: 0.9639305}
+          localScale: {x: 0.48276865, y: 0.48276865, z: 0.48276865}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.02
+          height: 0.25
+          direction: 1
+    - key: agentColliderData/body05_hair03_acc-01.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0074, y: 0.0139, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.23
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_01/col (main)
+          localPosition: {x: 0.0671, y: 0.0055, z: -0.0032}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.2
+          height: 0.25
+          direction: 1
+        - id: acc_col_01/col (left)
+          localPosition: {x: 0.0761, y: 0.092, z: 0.0689}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.09
+          height: 0.1
+          direction: 1
+        - id: acc_col_01/col (right)
+          localPosition: {x: 0.0631, y: 0.1011, z: -0.0407}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.1
+          height: 0.1
+          direction: 1
+    - key: agentColliderData/body05_hair04_acc-01.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_01/col (main)
+          localPosition: {x: 0.0671, y: 0.0055, z: -0.0032}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.2
+          height: 0.25
+          direction: 1
+        - id: acc_col_01/col (left)
+          localPosition: {x: 0.0695, y: 0.0881, z: 0.0774}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.09
+          height: 0.1
+          direction: 1
+        - id: acc_col_01/col (right)
+          localPosition: {x: 0.0631, y: 0.1011, z: -0.0407}
+          localRotation: {x: 0.078851566, y: 0.033189856, z: -0.1598673, w: 0.9834243}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.1
+          height: 0.1
+          direction: 1
+    - key: agentColliderData/body05_hair04_acc-02.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0839, y: -0.0221, z: 0.0929}
+          localRotation: {x: 0.20585896, y: -0.0045461035, z: 0.0000017881385, w: 0.9785712}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.0747, y: 0.0776, z: -0.0243}
+          localRotation: {x: 0.36386743, y: -0.007526219, z: 0.00010293722, w: 0.9314203}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0631, y: 0.0835, z: 0.0644}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.045
+          height: 0.2
+          direction: 2
+    - key: agentColliderData/body05_hair09_acc-02.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0743, y: -0.0182, z: 0.0865}
+          localRotation: {x: 0.20585896, y: -0.0045461035, z: 0.0000017881385, w: 0.9785712}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.0782, y: 0.0836, z: -0.0328}
+          localRotation: {x: 0.36386743, y: -0.0075262184, z: 0.00010293722, w: 0.9314203}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0753, y: 0.0838, z: 0.0644}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.045
+          height: 0.2
+          direction: 2
+    - key: agentColliderData/body05_hair09_acc-03.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_03/col (right)
+          localPosition: {x: -0.0755, y: 0.0846, z: -0.0572}
+          localRotation: {x: 0.3813804, y: -0.008419543, z: -0.00011765957, w: 0.9243799}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (left)
+          localPosition: {x: -0.0774, y: -0.0042, z: 0.0801}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (front)_top
+          localPosition: {x: -0.0806, y: 0.0775, z: 0.0597}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+        - id: acc_col_03/col (front)_bottom
+          localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+    - key: agentColliderData/body05_hair09_acc-10.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_10/col (right)
+          localPosition: {x: -0.0856, y: 0.0767, z: -0.0534}
+          localRotation: {x: 0.26160032, y: -0.020914743, z: 0.015047427, w: 0.96483237}
+          localScale: {x: 0.48276865, y: 0.48276865, z: 0.48276865}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.0275
+          height: 0.25
+          direction: 1
+    - key: agentColliderData/body05_hair04_acc-03.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_03/col (right)
+          localPosition: {x: -0.0708, y: 0.0632, z: -0.0266}
+          localRotation: {x: 0.3813804, y: -0.008419543, z: -0.00011765957, w: 0.9243799}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (left)
+          localPosition: {x: -0.0748, y: -0.0069, z: 0.072}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (front)_top
+          localPosition: {x: -0.0725, y: 0.0778, z: 0.0625}
+          localRotation: {x: 0.3088234, y: -0.03016984, z: -0.007006554, w: 0.95061505}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.29
+          direction: 2
+        - id: acc_col_03/col (front)_bottom
+          localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+    - key: agentColliderData/body05_hair04_acc-04.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.08
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (right)
+          localPosition: {x: -0.0709, y: 0.0755, z: -0.0024}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (left)
+          localPosition: {x: -0.0821, y: 0, z: 0.0906}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (front)_top
+          localPosition: {x: -0.0767, y: 0.086, z: 0.0657}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (front)_bottom
+          localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+    - key: agentColliderData/body05_hair11_acc-04.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.07
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (right)
+          localPosition: {x: -0.0651, y: 0.088, z: -0.0724}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (left)
+          localPosition: {x: -0.0694, y: -0.0415, z: 0.1244}
+          localRotation: {x: 0.26216334, y: -0.007286307, z: -0.0003329216, w: 0.964996}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.25
+          direction: 1
+        - id: acc_col_04/col (front)_top
+          localPosition: {x: -0.0767, y: 0.086, z: 0.0657}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.04
+          height: 0.3
+          direction: 2
+        - id: acc_col_04/col (front)_bottom
+          localPosition: {x: -0.0411, y: 0.0841, z: 0.0649}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.25
+          direction: 2
+    - key: agentColliderData/body05_hair11_acc-02.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.07
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (left)
+          localPosition: {x: -0.0681, y: -0.0428, z: 0.1136}
+          localRotation: {x: 0.30548435, y: -0.007297692, z: -0.00018605583, w: 0.95216906}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.3
+          direction: 1
+        - id: acc_col_02/col (right)
+          localPosition: {x: -0.07, y: 0.0834, z: -0.0696}
+          localRotation: {x: 0.3119188, y: -0.0064497567, z: 0.00006279347, w: 0.95008683}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.25
+          direction: 1
+        - id: acc_col_02/col (front)_top
+          localPosition: {x: -0.0753, y: 0.0838, z: 0.0644}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.03
+          height: 0.3
+          direction: 2
+        - id: acc_col_02/col (front)_bottom
+          localPosition: {x: -0.0417, y: 0.0781, z: 0.0607}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.59280515, y: 0.59280515, z: 0.59280515}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.045
+          height: 0.2
+          direction: 2
+    - key: agentColliderData/body05_hair11_acc-03.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.07
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_03/col (right)
+          localPosition: {x: -0.0639, y: 0.0848, z: -0.0773}
+          localRotation: {x: 0.34532195, y: -0.0014696711, z: 0.002035796, w: 0.938481}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (left)
+          localPosition: {x: -0.0697, y: -0.0481, z: 0.1185}
+          localRotation: {x: 0.29168406, y: -0.005558965, z: 0.0002453028, w: 0.9564985}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.275
+          direction: 1
+        - id: acc_col_03/col (front)_top
+          localPosition: {x: -0.0806, y: 0.0775, z: 0.0597}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+        - id: acc_col_03/col (front)_bottom
+          localPosition: {x: -0.0461, y: 0.0765, z: 0.0595}
+          localRotation: {x: 0.31064498, y: -0.0067961356, z: -0.0000001490116, w: 0.9505018}
+          localScale: {x: 0.5928052, y: 0.5928052, z: 0.5928051}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.05
+          height: 0.275
+          direction: 2
+    - key: agentColliderData/body05_hair11_acc-10.agentCol
+      value:
+        bodyType: 4
+        _colliderData:
+        - id: head/col
+          localPosition: {x: -0.0035, y: 0.0138, z: -0.0004}
+          localRotation: {x: 0.016992271, y: -0.00932236, z: 0.075546116, w: 0.99695396}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.07, y: 0.035, z: 0}
+          radius: 0.07
+          height: 0.225
+          direction: 0
+        - id: neck/col
+          localPosition: {x: -0.0327, y: -0.0114, z: 0.0021}
+          localRotation: {x: -0.024576902, y: -0.049839675, z: -0.0139826685, w: 0.99835694}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.06
+          height: 0.125
+          direction: 0
+        - id: leftShoulder/col
+          localPosition: {x: -0.012, y: 0.03, z: -0.001}
+          localRotation: {x: -0.016492693, y: -0.008965261, z: 0.1291053, w: 0.99145323}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.03, y: -0.01, z: 0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: rightShoulder/col
+          localPosition: {x: 0.002, y: 0.037, z: 0.004}
+          localRotation: {x: -0.017660476, y: -0.042016838, z: 0.1391609, w: 0.9892204}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.045, y: -0.01, z: -0.01}
+          radius: 0.065
+          height: 0.175
+          direction: 0
+        - id: spine/col
+          localPosition: {x: -0.023, y: -0.002, z: 0.001}
+          localRotation: {x: -0.00075668097, y: -0.00011605024, z: 0.000025600188, w: 0.99999976}
+          localScale: {x: 1, y: 1, z: 1}
+          center: {x: -0.09, y: 0.009, z: 0}
+          radius: 0.12
+          height: 0.3
+          direction: 2
+        - id: acc_col_10/col (right)
+          localPosition: {x: -0.076, y: 0.0735, z: -0.071}
+          localRotation: {x: 0.26160032, y: -0.020914745, z: 0.015047427, w: 0.96483237}
+          localScale: {x: 0.48276865, y: 0.48276865, z: 0.48276865}
+          center: {x: 0, y: 0, z: 0}
+          radius: 0.07
+          height: 0.3
+          direction: 1

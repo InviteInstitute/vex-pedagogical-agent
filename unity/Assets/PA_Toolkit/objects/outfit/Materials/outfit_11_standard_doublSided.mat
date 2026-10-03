@@ -1,0 +1,347 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: outfit_11_standard_doublSided
+  m_Shader: {fileID: 4800000, guid: 8486e216c4e62364a8029adc1b9a96af, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _GLOSSYREFLECTIONS_OFF
+  - _NORMALMAP
+  - _SPECULARHIGHLIGHTS_OFF
+  m_InvalidKeywords:
+  - L_F_RELGI_ON
+  - L_F_SS_ON
+  - NOKEWO
+  - _WINDQUALITY_NONE
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
+  disabledShaderPasses: []
+  m_LockedProperties: _Glossiness _Opacity
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaMask:
+        m_Texture: {fileID: 2800000, guid: b6944b8ec29ad124c9ebbe7b111fdfd5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AnisoDir:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 8c51fe0da96fea947aab2a12cba9a712, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DecalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Detail:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EnvMapSampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ExtraTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FReflection:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FalloffSampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MCap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MCapMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 42f5635a67d10c84daa5b0239a2188f5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskFReflection:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskGloss:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskSelfLit:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTransparency:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapSampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 2800000, guid: 8c51fe0da96fea947aab2a12cba9a712, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimLightSampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowColorTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowOffset:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowT:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularReflectionSampler:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SubsurfaceTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TranslucencyMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _AO: 2.4
+    - _AffectShadow: 1
+    - _BaseLight: 0.35
+    - _BillboardKwToggle: 0
+    - _BillboardShadowFade: 0.5
+    - _BumpScale: 1
+    - _ColorMask: 15
+    - _Compa: 4
+    - _Cull: 0
+    - _CustomLightDirectionFollowObjectRotation: 0
+    - _CustomLightDirectionIntensity: 0
+    - _Cutoff: 0.116
+    - _DetailNormalMapScale: 1
+    - _DirectionalLightIntensity: 0
+    - _DoubleSided: 0
+    - _DstBlend: 0
+    - _EdgeThickness: 1
+    - _Emiss: 1
+    - _EnableExternalAlpha: 0
+    - _FReflectionIntensity: 0
+    - _FReflectionRoughtness: 0
+    - _GlossColorPower: 10
+    - _GlossMapScale: 1
+    - _GlossSoftness: 0
+    - _GlossTextureFollowLight: 0
+    - _GlossTextureFollowObjectRotation: 0
+    - _GlossTextureSoftness: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _HighlightColorPower: 1
+    - _HueVariationKwToggle: 0
+    - _InvFade: 1
+    - _L_F_CLD: 0
+    - _L_F_FR: 0
+    - _L_F_GLO: 0
+    - _L_F_GLOT: 0
+    - _L_F_MC: 0
+    - _L_F_NM: 0
+    - _L_F_PT: 0
+    - _L_F_RL: 0
+    - _L_F_SCT: 0
+    - _L_F_SL: 0
+    - _L_F_SON: 0
+    - _L_F_SS: 1
+    - _L_F_ST: 0
+    - _L_F_UOAL: 0
+    - _LightAffectRimLightColor: 0
+    - _LightFalloffAffectShadowT: 0
+    - _LightFalloffSoftness: 1
+    - _MCIALO: 0
+    - _MCapIntensity: 1
+    - _MVCOL: 0
+    - _Metallic: 0
+    - _Mode: 1
+    - _NormalIntensity: 1
+    - _NormalMapIntensity: 1
+    - _NormalMapKwToggle: 0
+    - _Occlusion: 7.5
+    - _OcclusionStrength: 1
+    - _Opacity: 1
+    - _Oper: 0
+    - _OverallShadowColorPower: 1
+    - _PSGLOTEX: 0
+    - _PTexturePower: 0
+    - _Parallax: 0.02
+    - _PointSpotlightIntensity: 0.1
+    - _PrimaryShift: 0.5
+    - _PrimarySpecularMultiplier: 100
+    - _RELG: 1
+    - _RefMetallic: 0
+    - _RefVal: 0
+    - _RimLightColorPower: 10
+    - _RimLightInLight: 1
+    - _RimLightSoftness: 1
+    - _RimLightUnfill: 1.5
+    - _SPECIN: 1
+    - _SPECMODE: 0
+    - _STIL: 0
+    - _SecondaryShift: 0.7
+    - _SecondarySpecularMultiplier: 100
+    - _SelfLitHighContrast: 1
+    - _SelfLitIntensity: 0
+    - _SelfLitPower: 2
+    - _SelfShadowColorPower: 1
+    - _SelfShadowHardness: 1
+    - _SelfShadowShadowTAtViewDirection: 0
+    - _SelfShadowThreshold: 0.85
+    - _ShadowColorTexturePower: 0
+    - _ShadowStrength: 1
+    - _ShadowTColorPower: 1
+    - _ShadowTHardness: 1
+    - _ShadowTLightThreshold: 50
+    - _ShadowTShadowThreshold: 0
+    - _Shininess: 0.078125
+    - _ShowNormal: 0
+    - _SmoothObjectNormal: 0
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 0
+    - _SpecularIntenstiy: 0
+    - _SpecularMultiplier: 1
+    - _SpecularMultiplier2: 1
+    - _SpecularPower: 20
+    - _SquashAmount: 1
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _SubsurfaceIndirect: 0
+    - _SubsurfaceKwToggle: 0
+    - _TEXMCOLINT: 1
+    - _TranslucencyViewDependency: 0.7
+    - _TransparentThreshold: 0
+    - _TwoSided: 0
+    - _UVSec: 0
+    - _UseUIAlphaClip: 0
+    - _VertexColorGreenControlSelfShadowThreshold: 0
+    - _VertexColorRedControlSmoothObjectNormal: 0
+    - _WindQuality: 0
+    - _XYZHardness: 14
+    - _ZWrite: 1
+    m_Colors:
+    - _Color: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
+    - _CustomLightDirection: {r: 0, g: 0, b: 10, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
+    - _HueVariationColor: {r: 1, g: 0.5, b: 0, a: 0.1}
+    - _MainColor: {r: 0, g: 0.33962262, b: 0.33129996, a: 1}
+    - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PrimarySpecularColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SecondarySpecularColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SelfLitColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SelfShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.8, g: 0.8, b: 1, a: 1}
+    - _ShadowTColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecularColor2: {r: 1, g: 1, b: 1, a: 1}
+    - _SubsurfaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _TranslucencyColor: {r: 0.73, g: 0.85, b: 0.41, a: 1}
+    - _TreeInstanceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _TreeInstanceScale: {r: 1, g: 1, b: 1, a: 1}
+    - _XYZPosition: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

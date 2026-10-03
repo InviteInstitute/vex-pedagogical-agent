@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c7ac33998cead4eaa316830afafde3, type: 3}
+  m_Name: hair_10
+  m_EditorClassIdentifier: 
+  _id: hair10
+  _longName: Hairstyle 10 (Faded Cut)
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 2417d0cc7204d434397fb80f78f10569, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _mesh: {fileID: -5040651597314945188, guid: 328723ea68ae30f4da36cf979050c9b2, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 1a2d2daf90744524c8d398ed74eda098, type: 2}
+  _hairPrefab: {fileID: -3447527942219945921, guid: 6e2ffe121c1324e4398dcaf0648abb1b, type: 3}
+  _childPrefab: {fileID: 0}

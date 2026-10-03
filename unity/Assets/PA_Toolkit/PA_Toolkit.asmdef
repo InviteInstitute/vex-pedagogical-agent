@@ -1,0 +1,16 @@
+{
+    "name": "PA_Toolkit",
+    "rootNamespace": "PA_Toolkit",
+    "references": [
+        "GUID:8579ab42c9ab63d4bac5fb07bd390b46"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -11,9 +11,11 @@ from vex_agent.api.students import router as students_router
 from vex_agent.api.admin import router as admin_router
 from vex_agent.api.stream import router as stream_router
 from vex_agent.api.system import router as system_router
+from vex_agent.api.unity import router as unity_router
 from vex_agent.services.daemon import start_daemon, stop_daemon
 from vex_agent.services.logsync import sync_invite_hub_logs
 from vex_agent.llm.client import get_openai_client
+from vex_agent.services import tts
 from vex_agent.api.turnstile import TurnstileGateMiddleware
 
 logging.basicConfig(
@@ -40,6 +42,17 @@ def warm_up() -> None:
         logger.warning("Invite Hub warm-up sync skipped", exc_info=True)
 
 
+def warm_up_tts() -> None:
+    """Load Kokoro and run its first-run setup off the request path. Its own thread:
+    the Invite Hub warm-up can spend minutes draining a log backlog, and the avatar
+    shouldn't wait behind it. Best-effort, like warm_up."""
+    try:
+        tts.warm()
+        logger.info("TTS warm-up done")
+    except Exception:
+        logger.warning("TTS warm-up skipped (run scripts/fetch_kokoro.py?)", exc_info=True)
+
+
 def get_allowed_origins() -> list[str]:
     configured_origins = os.getenv("BACKEND_CORS_ORIGINS", "")
     if configured_origins.strip():
@@ -60,6 +73,7 @@ async def lifespan(app: FastAPI):
     # request doesn't pay ~1.3s of cold-start. In a background thread so the backlog
     # drain inside the warm-up sync can't block startup/readiness.
     threading.Thread(target=warm_up, name="warm-up", daemon=True).start()
+    threading.Thread(target=warm_up_tts, name="warm-up-tts", daemon=True).start()
     # Start the proactive trigger daemon (no-op unless TRIGGER_DAEMON_ENABLED).
     start_daemon()
     yield
@@ -81,3 +95,4 @@ app.include_router(students_router)
 app.include_router(admin_router)
 app.include_router(stream_router)
 app.include_router(system_router)
+app.include_router(unity_router)

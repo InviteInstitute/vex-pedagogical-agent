@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b883933e30029c46b4500bba39f369c, type: 3}
+  m_Name: accessory_09
+  m_EditorClassIdentifier: 
+  _id: accessory09
+  _longName: 'Accessory 09: Scarf'
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 4583f0252a12a524f92bb4d3af9dc838, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _slots: 32
+  _disableHair: 0
+  _prefab: {fileID: 2269819210173052889, guid: 74b3380f24eafc44f9b70d0747927c7e, type: 3}
+  _mesh: {fileID: 5873691238084293844, guid: bf99983883ef76a46af917f561b02876, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 97c818d3a9996a54b8505c9cc2ce4335, type: 2}
+  overridesColliderData: 0
+  _colliderDataByBodytype: []

@@ -18,6 +18,7 @@ from vex_agent.data.db import (
     insert_message_feedback,
 )
 from vex_agent.domain.feedback_policy import FeedbackClass, determine_feedback_class
+from vex_agent.domain.question_types import QUESTION_TYPE_SPECS
 from vex_agent.services.feedback import generate_feedback
 from vex_agent.services.logsync import sync_invite_hub_logs
 from vex_agent.api.schemas import (
@@ -162,6 +163,7 @@ def create_response(
     llm_request = None
     response_text = payload.response_text
     feedback_classes = set()
+    question_type = None
     synced_log_count = 0
     task = resolve_task_description(resolved_playground)
 
@@ -240,6 +242,14 @@ def create_response(
                 events=events,
             )
             llm_request = result["llm_request"]
+            if result["question_type"]:
+                question_type = QUESTION_TYPE_SPECS[result["question_type"]].name
+            log_stage(
+                "Question Type",
+                student_id=student_id,
+                session_id=resolved_session_id,
+                question_type=question_type,
+            )
             log_stage(
                 "Situation Model",
                 student_id=student_id,
@@ -285,6 +295,7 @@ def create_response(
         if feedback_classes
         else None,
         response_id=response_id,
+        question_type=question_type,
     )
     log_stage(
         "Assistant Response Sent",
@@ -303,6 +314,7 @@ def create_response(
         response_text=response_text,
         llm_model=llm_request["model"] if llm_request else None,
         llm_prompt=llm_request["prompt"] if llm_request else None,
+        question_type=question_type,
         status="received",
     )
 

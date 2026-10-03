@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a3b31aa75be74e45a635977dee12350, type: 3}
+  m_Name: outfit_03_color_02
+  m_EditorClassIdentifier: 
+  _id: outfit03_color_02
+  _longName: 'Outfit 03: Hoodie Outfit'
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: bac648f876f2f604495a4fbefe9d616b, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _mesh: {fileID: 1772177891547840129, guid: 491bee623fdb6064f899c5535067f6f1, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 9220237ed15968f408a641d0964805b7, type: 2}
+  - {fileID: 2100000, guid: 1310641782dd44441aa5606ef22eb381, type: 2}
+  helper: {fileID: 127553311256323276, guid: 18879cf09302bee40ac157e42ae7fbca, type: 3}

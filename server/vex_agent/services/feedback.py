@@ -15,7 +15,7 @@ from the trigger) and passed in.
 from vex_agent.data.db import fetch_events_from_db
 from vex_agent.domain.catalogs import resolve_available_blocks, resolve_task_description
 from vex_agent.domain.context_builder import build_current_program, build_situation_model
-from vex_agent.llm.client import generate_main_llm_response
+from vex_agent.llm.client import classify_question, generate_main_llm_response
 from vex_agent.services.sessions import get_recent_session_messages
 
 
@@ -31,7 +31,11 @@ def generate_feedback(
 ) -> dict:
     """Run the shared context-assembly + single-pass LLM generation.
 
-    Returns {llm_request, situation, feedback_classes}. `llm_request` is the feedback
+    Reactive turns first classify the student message into a question type (a small
+    separate call) whose scaffolding joins the grounded prompt; proactive turns have no
+    message, so none.
+
+    Returns {llm_request, situation, feedback_classes, question_type}. `llm_request` is the feedback
     dict ({response_text, model, prompt}); `situation` is the deterministic grounding
     block fed to the model (returned so the route can log it). Pass `events` (reactive
     already has them) to skip a redundant DB fetch.
@@ -50,6 +54,7 @@ def generate_feedback(
     # prompt -- that hallucinated, §9); reactive passes no behavior_fact.
     if behavior_fact:
         situation = f"{situation}\n\n{behavior_fact}"
+    question_type = classify_question(student_message) if student_message else None
     current_program = build_current_program(
         student_id=student_id, session_id=session_id, events=events
     )
@@ -62,9 +67,11 @@ def generate_feedback(
         situation=situation,
         recent_messages=get_recent_session_messages(student_id, playground, session_id),
         feedback_classes=feedback_classes,
+        question_type=question_type,
     )
     return {
         "llm_request": llm_request,
         "situation": situation,
         "feedback_classes": feedback_classes,
+        "question_type": question_type,
     }

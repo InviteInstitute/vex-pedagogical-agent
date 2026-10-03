@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b883933e30029c46b4500bba39f369c, type: 3}
+  m_Name: accessory_08
+  m_EditorClassIdentifier: 
+  _id: accessory08
+  _longName: 'Accessory 08: Beanie'
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 73a5bd54b3b48334388db85841a2d735, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _slots: 1
+  _disableHair: 1
+  _prefab: {fileID: 3179661499414835629, guid: 6915a8e3957173f47924bb1a076a72ec, type: 3}
+  _mesh: {fileID: -9050357920498736866, guid: ed6e5291600990e46ab59b69f0b2f67e, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: c8e8edb5a8442c3488afcb6facfcf8df, type: 2}

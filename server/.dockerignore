@@ -1,0 +1,7 @@
+# Local-only state; the image installs deps and fetches the model itself.
+.venv/
+.pgdata/
+.run/
+models/
+**/__pycache__/
+.pytest_cache/

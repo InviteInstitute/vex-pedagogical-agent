@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b883933e30029c46b4500bba39f369c, type: 3}
+  m_Name: accessory_00
+  m_EditorClassIdentifier: 
+  _id: accessory00
+  _longName: None
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 68402b0da95d84a48b5c0e52f85cd621, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _slots: 32
+  _disableHair: 0
+  _mesh: {fileID: 0}
+  _materials:
+  - {fileID: 2100000, guid: b4dfc23a4e410b04bbf9a8ae24282ce2, type: 2}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a3b31aa75be74e45a635977dee12350, type: 3}
+  m_Name: outfit_09_color_03
+  m_EditorClassIdentifier: 
+  _id: outfit09_color_03
+  _longName: 'Outfit 09: Cardigan Outfit'
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 8857ee58f4b3d084bbe36ce29b09a168, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _mesh: {fileID: -6694969668564080708, guid: 66a45b4a5f36d094d83b44b389167b1f, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: 9220237ed15968f408a641d0964805b7, type: 2}
+  - {fileID: 2100000, guid: ae6cb0b1f8683c54486e432295d86468, type: 2}
+  helper: {fileID: 4915009475704165312, guid: 6aa9375829b58e048addce49b374b132, type: 3}

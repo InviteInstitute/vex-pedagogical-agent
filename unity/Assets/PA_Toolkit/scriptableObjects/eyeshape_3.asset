@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cef4eeaabf00af4a991c1b59a7b5116, type: 3}
+  m_Name: eyeshape_3
+  m_EditorClassIdentifier: 
+  _id: eyeShape3
+  _longName: Eye Shape 3
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: 70cf5370da14e934e9c9e781ae7985e0, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _blinkAnimationName: Blink_01
+  _blendShapes:
+  - d_00
+  - d_01
+  - d_02
+  _blendShapeValues:
+  - 0
+  - 100
+  - 0

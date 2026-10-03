@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from vex_agent.domain.feedback_policy import FeedbackClass
+from vex_agent.domain.question_types import QUESTION_TYPE_SPECS, QuestionType
 from vex_agent.domain.metrics import (
     GO_MARS_MILESTONE_RULES,
     EventRecord,
@@ -186,6 +187,9 @@ FEEDBACK_CLASS_TO_SPEC_KEY = {
 }
 
 
+NO_QUESTION_TYPE = "None (no student question; this is a proactive check-in)"
+NO_SCAFFOLDING = "None"
+
 PROMPT_TEMPLATE = """You are an educational feedback assistant for VEXcode VR, a block-based programming tool for middle school students.
 
 Your job is to write one short feedback message for the student.
@@ -203,6 +207,12 @@ Student's current program (parsed from their workspace):
 
 Student message:
 {student_message}
+
+Student question type:
+{question_type}
+
+Scaffolding for this question type:
+{scaffolding}
 
 What's happening now (measured from the session's telemetry):
 {situation}
@@ -230,7 +240,12 @@ Use these sources in this priority order:
 3. What's happening now (the measured telemetry facts)
 4. Recent chat
 5. Task
-6. Feedback type descriptions/examples/notes
+6. Scaffolding for the question type
+7. Feedback type descriptions/examples/notes
+
+How to combine scaffolding and feedback types:
+- The scaffolding decides WHAT to say next; the feedback types decide HOW to say it.
+- The scaffolding may describe several steps, but the student sees at most two short sentences. Deliver only the next step that the recent chat has not already covered.
 
 Before writing feedback:
 - Use the student's current program as the source of truth for which blocks are on the workspace and how they are connected.
@@ -264,9 +279,9 @@ OUTPUT RULES
 - Output only the feedback message.
 - Do not include labels, explanations, bullet points, or quotation marks.
 - Prefer one bite-sized hint or explanation over a full paragraph.
-- Keep it to exactly 1 short sentence.
-- Aim for about 10-18 words when possible.
-- Never exceed 22 words.
+- Keep it to 1-2 short sentences.
+- Aim for about 20-35 words when possible.
+- Never exceed 40 words.
 """
 
 def build_feedback_prompt(
@@ -278,6 +293,8 @@ def build_feedback_prompt(
     recent_chat: str,
     feedback_types: list[str],
     feedback_specs: dict,
+    question_type: str = NO_QUESTION_TYPE,
+    scaffolding: str = NO_SCAFFOLDING,
 ) -> str:
     feedback_types_text = "\n".join(f"- {t}" for t in feedback_types)
 
@@ -303,6 +320,8 @@ def build_feedback_prompt(
         current_program=current_program,
         situation=situation,
         recent_chat=recent_chat,
+        question_type=question_type,
+        scaffolding=scaffolding,
         feedback_types=feedback_types_text,
         descriptions=descriptions_text,
         examples=examples_text,
@@ -318,6 +337,7 @@ def build_feedback_prompt_from_classes(
     situation: str,
     recent_messages: list[dict[str, str]],
     feedback_classes: set[FeedbackClass],
+    question_type: QuestionType | None = None,
 ) -> str:
     feedback_types = []
     for feedback_class in feedback_classes:
@@ -339,6 +359,9 @@ def build_feedback_prompt_from_classes(
     if not current_program:
         current_program = "None available (no project snapshot yet)"
 
+    # Proactive turns have no student message, so no question type.
+    spec = QUESTION_TYPE_SPECS[question_type] if question_type else None
+
     return build_feedback_prompt(
         task=task,
         student_message=student_message,
@@ -348,6 +371,8 @@ def build_feedback_prompt_from_classes(
         recent_chat=recent_chat,
         feedback_types=feedback_types,
         feedback_specs=FEEDBACK_SPECS,
+        question_type=spec.name if spec else NO_QUESTION_TYPE,
+        scaffolding=spec.scaffolding if spec else NO_SCAFFOLDING,
     )
 
 

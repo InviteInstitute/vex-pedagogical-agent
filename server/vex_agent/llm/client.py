@@ -7,17 +7,22 @@ import openai
 
 from vex_agent.domain.context_builder import build_feedback_prompt_from_classes
 from vex_agent.domain.feedback_policy import FeedbackClass
+from vex_agent.domain.question_types import (
+    QuestionType,
+    build_classifier_prompt,
+    parse_question_type,
+)
 from vex_agent.llm.sanitizer import sanitize_llm_output
 from vex_agent.config import get_navigator_model
 
 DEFAULT_LLM_TIMEOUT_S = 30.0
-MAX_STUDENT_RESPONSE_SENTENCES = 1
-MAX_STUDENT_RESPONSE_WORDS = 22
+MAX_STUDENT_RESPONSE_SENTENCES = 2
+MAX_STUDENT_RESPONSE_WORDS = 40
 SENTENCE_SPLIT_PATTERN = re.compile(r"(?<=[.!?])\s+")
 # Buffer above MAX_STUDENT_RESPONSE_WORDS (~1.3 tokens/word). Generous on purpose:
 # a long `block name` in backticks can eat 20+ tokens on its own, and a cap that's
 # too tight truncates the model mid-word instead of mid-generation-savings.
-MAIN_RESPONSE_MAX_TOKENS = 160
+MAIN_RESPONSE_MAX_TOKENS = 240
 
 _client: openai.OpenAI | None = None
 
@@ -30,6 +35,7 @@ def prepare_main_llm_request(
     situation: str,
     recent_messages: list[dict[str, str]],
     feedback_classes: set[FeedbackClass],
+    question_type: QuestionType | None = None,
 ) -> dict[str, str]:
     prompt = build_feedback_prompt_from_classes(
         task=task,
@@ -39,6 +45,7 @@ def prepare_main_llm_request(
         situation=situation,
         recent_messages=recent_messages,
         feedback_classes=feedback_classes,
+        question_type=question_type,
     )
     return {
         "model": get_navigator_model(),
@@ -105,6 +112,16 @@ def execute_prompt(*, model: str, prompt: str, max_tokens: int | None = None) ->
     return response.choices[0].message.content
 
 
+def classify_question(student_message: str) -> QuestionType:
+    """Agent 1 of the study's two-agent design: label the student's message with a
+    question type so the main call can pick matching scaffolding."""
+    raw = execute_prompt(
+        model=get_navigator_model(),
+        prompt=build_classifier_prompt(student_message),
+    )
+    return parse_question_type(raw)
+
+
 def enforce_student_response_length(response_text: str) -> str:
     normalized_text = " ".join((response_text or "").split())
     if not normalized_text:
@@ -137,6 +154,7 @@ def generate_main_llm_response(
     situation: str,
     recent_messages: list[dict[str, str]],
     feedback_classes: set[FeedbackClass],
+    question_type: QuestionType | None = None,
 ) -> dict[str, str]:
     llm_request = prepare_main_llm_request(
         task=task,
@@ -146,6 +164,7 @@ def generate_main_llm_response(
         situation=situation,
         recent_messages=recent_messages,
         feedback_classes=feedback_classes,
+        question_type=question_type,
     )
     response_text = execute_prompt(
         model=llm_request["model"],

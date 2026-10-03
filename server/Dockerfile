@@ -5,5 +5,7 @@ COPY . ./
 # editable install keeps package __file__ at /app/vex_agent, so the bind-mounted
 # invite_hub_sync_state.json (compose) lands where fetch_invite_hub_logs reads it.
 RUN pip install -e .
+# Kokoro TTS model for the Unity avatar (~350MB), baked in so audio works offline.
+RUN python scripts/fetch_kokoro.py
 EXPOSE 8000
 CMD ["uvicorn", "vex_agent.app:app", "--host", "0.0.0.0", "--port", "8000"]

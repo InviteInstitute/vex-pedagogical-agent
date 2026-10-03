@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0087a20f09756448a10a71c77e3e4e9, type: 3}
+  m_Name: settingsList_hairColors
+  m_EditorClassIdentifier: 
+  _items:
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 4dfa9c1a3c4f38442ae80b1022ef0d60, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 566f72edeb6019d47834002f83d3f33e, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: e3257a6d7ec3f644080d1df66e51ef6f, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 3e38b613145a1714a8683b0966f3231e, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: af1abbace5bc9374ca39a6adf9be89a7, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 7963651341804f54794cb6a357af665c, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 53f8a1fc97c040947b07cb74e2153747, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 268bb4167d02cd944879253385796aa5, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 630c6f8feb0db1043ab234538f3841ca, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 6c3032ffcf1670a4793b38c545854412, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 05c9ce470e2a88a44adbc299a4e3796c, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 8323dcff012a6364ba2d0f082e16642e, type: 2}

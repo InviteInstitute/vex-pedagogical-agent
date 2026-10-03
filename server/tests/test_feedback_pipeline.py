@@ -6,6 +6,7 @@ fact to the same deterministic situation model. Grounding is now a single pass (
 robot-behavior LLM call). All internals mocked."""
 from vex_agent.services import feedback as fb
 from vex_agent.domain.feedback_policy import FeedbackClass
+from vex_agent.domain.question_types import QuestionType
 
 
 def _patch(monkeypatch, captured):
@@ -15,6 +16,9 @@ def _patch(monkeypatch, captured):
     monkeypatch.setattr(fb, "build_situation_model", lambda events: "Goal progress: 40%.")
     monkeypatch.setattr(fb, "build_current_program", lambda **k: "PROG")
     monkeypatch.setattr(fb, "get_recent_session_messages", lambda *a, **k: [])
+    monkeypatch.setattr(
+        fb, "classify_question", lambda message: QuestionType.DEBUGGING_PROBLEM_DIAGNOSIS
+    )
 
     def fake_main(**kwargs):
         captured.update(kwargs)
@@ -36,6 +40,9 @@ def test_reactive_mode_passes_student_message_and_no_behavior_fact(monkeypatch):
     # reactive: the situation model is the measured facts, with no fact appended
     assert captured["situation"] == "Goal progress: 40%."
     assert out["situation"] == "Goal progress: 40%."
+    # reactive: the student message is classified and its type reaches the prompt
+    assert captured["question_type"] is QuestionType.DEBUGGING_PROBLEM_DIAGNOSIS
+    assert out["question_type"] is QuestionType.DEBUGGING_PROBLEM_DIAGNOSIS
 
 
 def test_proactive_mode_appends_behavior_fact_with_empty_student_message(monkeypatch):
@@ -47,6 +54,8 @@ def test_proactive_mode_appends_behavior_fact_with_empty_student_message(monkeyp
         student_message="", behavior_fact="the student has not done anything for a while",
     )
     assert captured["student_message"] == ""
+    # proactive: no student question, so no classification
+    assert captured["question_type"] is None
     assert captured["situation"] == (
         "Goal progress: 40%.\n\nthe student has not done anything for a while"
     )

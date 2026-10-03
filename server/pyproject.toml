@@ -12,10 +12,13 @@ dependencies = [
     "openai==1.108.1",
     "psycopg[binary]==3.2.10",
     "python-dotenv==1.1.1",
+    "python-multipart>=0.0.9",  # FastAPI Form/UploadFile parsing for the Unity bridge
+
     "apted>=1.0",              # per-run code-diff signal: APTED tree-edit distance (trigger engine)
     "uvicorn==0.35.0",
     "itsdangerous>=2.1",       # signs the "solved Turnstile" cookie (api/turnstile)
     "httpx",                   # Turnstile siteverify (also pulled in by openai)
+    "kokoro-onnx==0.6.1",      # local TTS for the Unity avatar (services/tts)
 ]
 
 [project.optional-dependencies]

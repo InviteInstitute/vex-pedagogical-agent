@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a86f7f5c2fc914c8cf109dd5adc532, type: 3}
+  m_Name: eyes_06
+  m_EditorClassIdentifier: 
+  _id: eyes06
+  _longName: Eye Color 06
+  _thumbnail:
+    _type: 0
+    _sprite: {fileID: 21300000, guid: e06b45a145a29324785e04de4e7e2bc1, type: 3}
+    _color01: {r: 1, g: 1, b: 1, a: 1}
+    _color02: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _texture: {fileID: 2800000, guid: b22fb087723c72c4abbe62af46c29f59, type: 3}
+  material: {fileID: 2100000, guid: 94176b3ae237fea43b0f30483d2d7cd6, type: 2}

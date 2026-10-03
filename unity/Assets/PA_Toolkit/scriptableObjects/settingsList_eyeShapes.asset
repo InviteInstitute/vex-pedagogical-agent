@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0087a20f09756448a10a71c77e3e4e9, type: 3}
+  m_Name: settingsList_eyeShapes
+  m_EditorClassIdentifier: 
+  _items:
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 24fc69225271f7e40bd741493a0e1cae, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 031b90c9ea3ecd842ad222b112661681, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 8c260f7fcf5568b4a9073256ac4e2028, type: 2}
+  - _isLocked: 0
+    _setting: {fileID: 11400000, guid: 89636fab95386ef478358d8685461ff8, type: 2}
