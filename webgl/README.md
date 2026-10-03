@@ -43,8 +43,10 @@ If your build name differs, set `BUILD_NAME` at the top of `index.html`.
    # open http://localhost:8080/webgl/
    ```
 
-Defaults target `serverurl=http://127.0.0.1:8010` and `student_id=fixture_01_1`
-(a seeded fixture), text only. Override per demo:
+`serverurl` defaults to the site serving the page (in production nginx proxies the
+bridge routes to the API), so for this local demo pass it explicitly:
+`http://localhost:8080/webgl/?serverurl=http://127.0.0.1:8010`. `student_id` defaults
+to `fixture_01_1` (a seeded fixture), text only. Override per demo:
 `http://localhost:8080/webgl/?student_id=SOME_ID&serverurl=https://...&audio=true`
 
 ## How a turn flows

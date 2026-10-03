@@ -22,7 +22,8 @@
     const CHATLLM_OBJECT = "EventSystem";
     // Overridable via URL: ?serverurl=...&student_id=...&audio=true
     const q = new URLSearchParams(location.search);
-    const serverurl = q.get("serverurl") || "http://127.0.0.1:8010";
+    // Default: the site serving this page (nginx proxies the bridge routes there).
+    const serverurl = q.get("serverurl") || location.origin;
     const student_id = q.get("student_id") || "fixture_01_1";
     // The avatar speaks replies via the backend's /tts (needs TTS configured there).
     const audioFeedback = q.get("audio") === "true" ? "true" : "false";

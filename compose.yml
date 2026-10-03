@@ -16,7 +16,9 @@ services:
       timeout: 3s
       retries: 15
     ports:
-      - "127.0.0.1:5433:5432"
+      # Host ports are overridable (API_PORT / DB_PORT in .env) so a second stack can
+      # run beside another on the same server.
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
 
   api:
     build: ./server
@@ -26,7 +28,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "127.0.0.1:8001:8000"
+      - "127.0.0.1:${API_PORT:-8001}:8000"
     # The Invite Hub sync cursor now lives in Postgres (event_logs.ingest_cursor,
     # migration 013), not a bind-mounted JSON file, so there is nothing to mount
     # here anymore -- a rebuild/recreate can no longer reset it.

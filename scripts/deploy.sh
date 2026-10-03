@@ -65,13 +65,17 @@ for f in server/db/migrations/*.sql; do
     psql -U vexagent -d vexagent -v ON_ERROR_STOP=1 -q < "$f" >/dev/null
 done
 
-echo "Waiting for the API to come back up ..."
+# The API's host port, as compose publishes it (API_PORT in .env, default 8001).
+API_PORT=$(sed -n 's/^API_PORT=//p' .env | tail -1)
+API_PORT=${API_PORT:-8001}
+
+echo "Waiting for the API to come back up on :$API_PORT ..."
 for _ in $(seq 1 30); do
-  curl -s -o /dev/null http://127.0.0.1:8001/healthz && break
+  curl -s -o /dev/null "http://127.0.0.1:$API_PORT/healthz" && break
   sleep 1
 done
 
-code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8001/healthz)
+code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:$API_PORT/healthz")
 if [ "$code" = "200" ]; then
   echo "Deploy OK -- /healthz = 200"
 else
