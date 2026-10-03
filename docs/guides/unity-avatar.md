@@ -51,7 +51,28 @@ Unity -batchmode -nographics -quit -projectPath unity \
 The build lands in `webgl/build_out/ai-conversation-agent/` (git-ignored), where
 `webgl/index.html` loads it.
 
-## Running It
+## On The Site
+
+Once a build is deployed (below), a signed-in student on the main page sees the avatar
+in the corner over VEXcode VR instead of the text chat panel (`client/src/AvatarAgent.jsx`
+frames `/webgl/?embed=1`). Its own chat window talks to the bridge, and the page relays
+the proactive check-ins from the push stream so the avatar shows and speaks those too
+(`ChatLLM.ReceiveProactiveJson`). A **Research view** button switches to the text panel,
+which researchers need for the telemetry and the Agent tab. Until a build exists, the
+page detects that and students keep the text chat, so deploying the client never breaks
+the site.
+
+## Deploying A Build
+
+Build on any machine with Unity (above), then copy the output to the server's checkout.
+No restart is needed; nginx serves it under `/webgl/` and the page picks it up on the
+next load:
+
+```bash
+rsync -av webgl/build_out/ SERVER:/var/www/vex-pedagogical-agent/webgl/build_out/
+```
+
+## Running It Locally
 
 ```bash
 python3 -m http.server 8080      # from the repo root

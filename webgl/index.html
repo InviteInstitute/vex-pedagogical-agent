@@ -6,6 +6,9 @@
   <title>VEX Conversation Agent</title>
   <style>
     html, body { margin: 0; height: 100%; background: #1b1b2e; }
+    /* ?embed=1: the client overlays the avatar on VEXcode VR, so let it show through
+       (the build's TransparentBackground.jslib clears the canvas to transparent). */
+    html.embed, html.embed body { background: transparent; }
     #unity-canvas { width: 100vw; height: 100vh; display: block; }
     #msg { position: fixed; top: 8px; left: 8px; color: #fff; font: 13px system-ui; opacity: .7; }
   </style>
@@ -27,7 +30,25 @@
     const student_id = q.get("student_id") || "fixture_01_1";
     // The avatar speaks replies via the backend's /tts (needs TTS configured there).
     const audioFeedback = q.get("audio") === "true" ? "true" : "false";
+    const embedded = q.get("embed") === "1" && window.parent !== window;
     // ---------------------------------------------------------------------
+
+    if (embedded) document.documentElement.classList.add("embed");
+
+    // Proactive check-ins come from the embedding client (it holds the push stream and
+    // sends them only after the "avatar-ready" message below). Each goes to ChatLLM to
+    // show and speak, with block names bolded for TextMeshPro like the bridge's replies.
+    let unity = null;
+    const deliver = (text) => {
+      const shown = text.replace(/`([^`]+)`/g, "<b>$1</b>");
+      const audio = audioFeedback === "true" ? `${serverurl}/tts?text=${encodeURIComponent(text)}` : "";
+      unity.SendMessage(CHATLLM_OBJECT, "ReceiveProactiveJson", JSON.stringify({ text: shown, audio }));
+    };
+    window.addEventListener("message", (event) => {
+      if (event.origin !== location.origin || event.source !== window.parent) return;
+      if (event.data?.type !== "proactive" || !event.data.text) return;
+      if (unity) deliver(event.data.text);
+    });
 
     const msg = document.getElementById("msg");
     const script = document.createElement("script");
@@ -44,6 +65,8 @@
         // ChatLLM prepends "/" to endpoint, so pass it WITHOUT a leading slash.
         const cfg = { serverurl, endpoint: "generate-feedback-from-text", student_id, audioFeedback };
         unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
+        unity = unityInstance;
+        if (embedded) window.parent.postMessage({ type: "avatar-ready" }, location.origin);
       }).catch((e) => { msg.textContent = "Unity load failed: " + e; });
     };
     script.onerror = () => {

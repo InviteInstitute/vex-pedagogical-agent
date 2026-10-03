@@ -393,6 +393,65 @@ public class ChatLLM : MonoBehaviour
         yield break;
     }
 
+    // Proactive check-ins arrive from the embedding page (webgl/index.html relays the
+    // backend's push stream) rather than as a reply to a request: show them in the open
+    // chat and, with audio on, speak them like any reply.
+    public void ReceiveProactiveJson(string json)
+    {
+        ProactiveMessage message;
+        try
+        {
+            message = JsonUtility.FromJson<ProactiveMessage>(json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error parsing proactive JSON from JS: " + e.Message);
+            return;
+        }
+        if (message == null || string.IsNullOrEmpty(message.text))
+        {
+            return;
+        }
+
+        if (ChatWindow.Instance != null)
+        {
+            ChatWindow.Instance.AddMessageToCurrentConversation("ai", message.text, false);
+        }
+
+        if (audioFeedback && !string.IsNullOrEmpty(message.audio))
+        {
+            StartCoroutine(PlayProactiveAudio(message.audio));
+        }
+        else
+        {
+            StartCoroutine(PlayAnimation());
+        }
+    }
+
+    private IEnumerator PlayProactiveAudio(string url)
+    {
+        using (UnityWebRequest audioRequest = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.WAV))
+        {
+            yield return audioRequest.SendWebRequest();
+            if (audioRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogWarning("Proactive audio download failed: " + audioRequest.error);
+                StartCoroutine(PlayAnimation());
+                yield break;
+            }
+            voice.clip = DownloadHandlerAudioClip.GetContent(audioRequest);
+            voice.Play();
+            StartCoroutine(PlayAnimation());
+        }
+    }
+
+    [System.Serializable]
+    private class ProactiveMessage
+    {
+        public string text;
+        public string audio;
+    }
+
     [System.Serializable]
     private class RequestData
     {

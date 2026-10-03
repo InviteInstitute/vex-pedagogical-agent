@@ -79,6 +79,10 @@ describe("Agent tab", () => {
     fetchMock = vi.fn((url) => {
       const json = (body, status = 200) =>
         Promise.resolve({ ok: status < 400, status, json: () => Promise.resolve(body) });
+      // No avatar build deployed: students get the text chat these tests drive.
+      if (url.startsWith("/webgl/")) {
+        return json({}, 404);
+      }
       if (url.endsWith("/research/config")) {
         return json({ ...CONFIG, session_tokens: { used: 2000, limit: 150000 } });
       }

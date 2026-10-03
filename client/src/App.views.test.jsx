@@ -22,10 +22,11 @@ beforeEach(() => {
   );
   vi.stubGlobal(
     "fetch",
-    vi.fn(() =>
+    vi.fn((url) =>
       Promise.resolve({
-        ok: true,
-        status: 200,
+        // No avatar build deployed: students get the text chat these tests drive.
+        ok: !String(url).startsWith("/webgl/"),
+        status: String(url).startsWith("/webgl/") ? 404 : 200,
         json: () => Promise.resolve({ session_id: "session-1" }),
       }),
     ),

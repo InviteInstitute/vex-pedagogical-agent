@@ -1004,6 +1004,43 @@ button:disabled {
 
 /* ---------- Launcher ---------- */
 
+/* The student view's avatar: a transparent Unity frame in the corner the chat panel
+   uses, so VEXcode VR stays visible around and through it. */
+.avatar-agent {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 3;
+  width: min(440px, calc(100vw - 48px));
+  height: min(720px, calc(100vh - 48px));
+  animation: panel-in 200ms var(--ease-out);
+}
+
+.avatar-agent iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color-scheme: normal;
+}
+
+.avatar-research-link {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-control);
+  background: rgba(251, 252, 254, 0.85);
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(16, 42, 72, 0.15);
+}
+
+.avatar-research-link:hover {
+  color: var(--vex-blue-deep);
+}
+
 .chat-launcher {
   position: absolute;
   right: 24px;
@@ -1108,6 +1145,13 @@ button:disabled {
   .chat-launcher {
     right: 12px;
     bottom: 12px;
+  }
+
+  .avatar-agent {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    height: min(640px, calc(100vh - 24px));
   }
 
   .resize-grip {

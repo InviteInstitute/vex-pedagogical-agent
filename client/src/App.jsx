@@ -8,6 +8,7 @@ import {
   ThumbsUp,
   WarningCircle,
 } from "@phosphor-icons/react";
+import AvatarAgent, { isAvatarBuildAvailable } from "./AvatarAgent.jsx";
 import ResearchLab, {
   EMPTY_AGENT_SETTINGS,
   buildOverrides,
@@ -261,6 +262,9 @@ function App() {
     ...readStored(AGENT_SETTINGS_STORAGE_KEY, {}),
   }));
   const [seenMessageCount, setSeenMessageCount] = useState(0);
+  // Whether the Unity avatar's WebGL build is deployed; until it is, students get
+  // the text chat panel.
+  const [isAvatarAvailable, setIsAvatarAvailable] = useState(false);
   const panelRef = useRef(null);
   const interactionRef = useRef(null);
   const messageListRef = useRef(null);
@@ -276,6 +280,14 @@ function App() {
   const showAgentTab = isResearchView && researchTab === "agent";
   // The start card sizes to its content; only the chat itself is resizable.
   const canResize = Boolean(studentId);
+  // Once signed in, the student view is the avatar (when built); the research view
+  // keeps the text panel for the telemetry and the Agent tab.
+  const showAvatar = Boolean(studentId) && !isResearchView && isAvatarAvailable;
+  const checkIns = chats.student.filter((message) => message.proactive);
+
+  useEffect(() => {
+    isAvatarBuildAvailable().then(setIsAvatarAvailable);
+  }, []);
 
   // Replies that land while the chat is collapsed, so the launcher can say so.
   const unseenReplies = isChatOpen
@@ -983,7 +995,13 @@ function App() {
         title="Research VR"
       />
 
-      {isChatOpen ? (
+      {showAvatar ? (
+        <AvatarAgent
+          studentId={studentId}
+          checkIns={checkIns}
+          onResearchView={() => setView("research")}
+        />
+      ) : isChatOpen ? (
         <section
           ref={panelRef}
           className={`chat-overlay ${!studentId ? "chat-overlay-start" : ""} ${
