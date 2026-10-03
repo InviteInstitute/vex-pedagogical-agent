@@ -10,4 +10,8 @@ RUN pip install -e ./vendor/agent-lm-packages && pip install -e .
 # Kokoro TTS model for the Unity avatar (~350MB), baked in so audio works offline.
 RUN python scripts/fetch_kokoro.py
 EXPOSE 8000
-CMD ["uvicorn", "vex_agent.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Trust X-Forwarded-Proto/For from any peer: compose publishes the API on 127.0.0.1
+# only, so nginx is the one peer, and inside docker it arrives from the bridge
+# gateway rather than 127.0.0.1 (uvicorn's default). Without this, URLs the API
+# builds (the avatar's /tts link) come out http:// behind an https site.
+CMD ["uvicorn", "vex_agent.app:app", "--host", "0.0.0.0", "--port", "8000", "--forwarded-allow-ips", "*"]

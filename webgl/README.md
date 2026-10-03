@@ -15,7 +15,8 @@ The Unity project is `../unity/` (Editor **2022.3.40f1**). Build it either way:
 - Editor: open `../unity/` in Unity Hub, then **File ▸ Build Settings ▸ WebGL ▸ Build**
   into `webgl/build_out/ai-conversation-agent/`.
 
-Either way this must exist (git-ignored):
+Either way, install the output with `./install_build.sh <build-dir>` (any build name;
+it copies and renames the files into place). This must then exist (git-ignored):
 
 ```
 webgl/build_out/ai-conversation-agent/Build/ai-conversation-agent.loader.js

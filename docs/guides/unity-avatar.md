@@ -64,12 +64,15 @@ the site.
 
 ## Deploying A Build
 
-Build on any machine with Unity (above), then copy the output to the server's checkout.
-No restart is needed; nginx serves it under `/webgl/` and the page picks it up on the
-next load:
+Build on any machine with Unity (above, or **File > Build Settings > WebGL** under any
+name; uncompressed, or compressed with Decompression Fallback on). Copy the build folder
+to the server and install it where the page loads it. The script normalizes the build's
+file names and swaps it in atomically, so no restart is needed and the page picks it up
+on the next load:
 
 ```bash
-rsync -av webgl/build_out/ SERVER:/var/www/vex-pedagogical-agent/webgl/build_out/
+rsync -av path/to/YourBuild/ SERVER:~/avatar-build/
+ssh SERVER /var/www/vex-pedagogical-agent/webgl/install_build.sh ~/avatar-build
 ```
 
 ## Running It Locally
