@@ -11,6 +11,11 @@ def _daemon_off_unless_set(monkeypatch):
     # setenv 'false', not delenv: a hole would get refilled by load_dotenv() (which
     # doesn't override a var that's present). Tests that need it on setenv 'true'.
     monkeypatch.setenv("TRIGGER_DAEMON_ENABLED", "false")
+    # No real LLM in tests, locally as in CI: blank (not delete, see above) the gateway
+    # credentials so a call a test forgot to stub fails here instead of quietly
+    # reaching the developer's configured model.
+    monkeypatch.setenv("OPENAI_API_KEY", "")
+    monkeypatch.setenv("OPENAI_BASE_URL", "")
     # Drop the run-distance cache between tests so a cached sequence from one test
     # can't satisfy another (the cache is keyed on (student, session) + event signature,
     # but clearing keeps the isolation story simple and explicit).

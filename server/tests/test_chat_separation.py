@@ -74,6 +74,7 @@ def test_a_reply_reads_only_its_own_chats_history(monkeypatch):
     monkeypatch.setattr(
         fb, "generate_main_llm_response", lambda **k: {"response_text": "ok", "model": "m"}
     )
+    monkeypatch.setattr(fb, "classify_question", lambda *a, **k: None)
     for chat in ("research", "student"):
         fb.generate_feedback(
             student_id="s",
