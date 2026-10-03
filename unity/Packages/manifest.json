@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.hecomi.ulipsync": "https://github.com/hecomi/uLipSync.git#upm",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.animation.rigging": "1.3.0",
     "com.unity.connect.share": "4.2.3",
