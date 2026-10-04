@@ -23,6 +23,7 @@ from learner_models.constants import INACTIVE_TRIGGER_SECONDS, RE_ALERT_SECONDS,
 from vex_agent.config import DEFAULT_PLAYGROUND
 from vex_agent.data.db import (
     fetch_events_from_db,
+    get_agent_settings,
     insert_agent_trigger_if_new,
     insert_message,
     latest_inactive_trigger,
@@ -31,6 +32,7 @@ from vex_agent.data.db import (
 )
 from vex_agent.domain.feedback_policy import FeedbackClass
 from vex_agent.domain.metrics import EventRecord
+from vex_agent.llm.client import DEFAULT_GENERATION_SETTINGS, GenerationSettings
 from vex_agent.services.feedback import generate_feedback
 from vex_agent.services.identity import track_identity_switches
 from vex_agent.services.sessions import CHATS, append_session_message
@@ -297,7 +299,10 @@ def generate_proactive_response(
         return None
 
     neutral_fact = _NEUTRAL_FACT.get(trigger_type, "The student may need a check-in.")
+    # Check-ins follow the settings chosen on the research page, like chat replies.
+    saved = get_agent_settings(student_id)
     result = generate_feedback(
+        settings=GenerationSettings(**saved) if saved else DEFAULT_GENERATION_SETTINGS,
         student_id=student_id,
         session_id=session_id,
         playground=playground or DEFAULT_PLAYGROUND,

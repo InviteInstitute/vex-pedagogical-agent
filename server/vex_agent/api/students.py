@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 
 from vex_agent.api.schemas import (
+    AgentSettingsRequest,
     FeedbackRequest,
     FeedbackResponse,
     MessageRequest,
@@ -23,6 +24,7 @@ from vex_agent.data.db import (
     get_message_id_for_response,
     insert_message,
     insert_message_feedback,
+    save_agent_settings,
 )
 from vex_agent.domain.catalogs import resolve_task_description
 from vex_agent.domain.feedback_policy import FeedbackClass, determine_feedback_class
@@ -116,6 +118,13 @@ def resolve_session(student_id: str) -> SessionResolutionResponse:
         playground=current_playground,
         status="resolved",
     )
+
+
+@router.put("/students/{student_id}/agent-settings", status_code=204)
+def put_agent_settings(student_id: str, payload: AgentSettingsRequest) -> None:
+    """The research page's settings, kept for this student's check-ins: the daemon
+    sends those on its own, with no request to carry them."""
+    save_agent_settings(student_id, payload.overrides.model_dump() if payload.overrides else None)
 
 
 @router.post("/students/{student_id}/messages", response_model=MessageResponse)

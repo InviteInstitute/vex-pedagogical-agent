@@ -57,6 +57,13 @@ class ResearchOverrides(BaseModel):
     )
 
 
+class AgentSettingsRequest(BaseModel):
+    overrides: ResearchOverrides | None = Field(
+        default=None,
+        description="Settings for this student's check-ins; null means production.",
+    )
+
+
 class StudentResponseRequest(BaseModel):
     message_id: str | None = Field(
         default=None,

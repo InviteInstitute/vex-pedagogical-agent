@@ -52,6 +52,39 @@ def get_ingest_cursor(name: str = "invite_hub") -> dict:
     return {"last_source_log_id": row[0], "last_event_time": row[1]}
 
 
+def save_agent_settings(student_id: str, settings: dict | None) -> None:
+    """Remember a student's research agent settings for their check-ins; None
+    clears them (back to production)."""
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            if settings is None:
+                cur.execute(
+                    "DELETE FROM chat.agent_settings WHERE student_id = %s",
+                    (canon_id(student_id),),
+                )
+            else:
+                cur.execute(
+                    """
+                    INSERT INTO chat.agent_settings (student_id, settings, updated_at)
+                    VALUES (%s, %s, NOW())
+                    ON CONFLICT (student_id) DO UPDATE SET
+                        settings = EXCLUDED.settings, updated_at = NOW()
+                    """,
+                    (canon_id(student_id), Json(settings)),
+                )
+
+
+def get_agent_settings(student_id: str) -> dict | None:
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT settings FROM chat.agent_settings WHERE student_id = %s",
+                (canon_id(student_id),),
+            )
+            row = cur.fetchone()
+    return row[0] if row else None
+
+
 def save_ingest_cursor(
     last_source_log_id: int,
     last_event_time: datetime | None = None,

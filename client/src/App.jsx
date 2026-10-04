@@ -276,6 +276,8 @@ function App() {
   const isStartModeRef = useRef(true);
   isStartModeRef.current = !studentId;
   const isResearchView = view === "research";
+  // The first block of the session's UUID; the full id is in the tooltip.
+  const shortSessionId = /^[0-9a-f]{8}-/i.test(sessionId) ? sessionId.slice(0, 8) : null;
   // One conversation; the research view is only the agent settings page.
   const messages = chats.student;
   // Settings chosen on the research page apply to this browser's chat (by voice or
@@ -330,6 +332,22 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isResearchView, hasCustomSettings, studentId]);
+
+  // Check-ins come from the server's daemon, not from a request this browser makes,
+  // so it keeps a copy of the settings to use for them. Saved custom settings wait for
+  // the config: until then they would read as production and clear the copy.
+  const savedOverrides = JSON.stringify(agentOverrides);
+  const overridesReady = !hasCustomSettings || Boolean(researchConfig);
+  useEffect(() => {
+    if (!studentId || !overridesReady) {
+      return;
+    }
+    fetch(`${apiBase}/students/${encodeURIComponent(studentId)}/agent-settings`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ overrides: JSON.parse(savedOverrides) }),
+    }).catch(() => {}); // best effort: the chat itself carries its settings
+  }, [apiBase, studentId, savedOverrides, overridesReady]);
 
   const collapseChat = () => {
     setSeenMessageCount(messages.length);
@@ -1063,9 +1081,9 @@ function App() {
             <div className="panel-title">
               <h1>INVITE Agent</h1>
               {studentId ? <span className="panel-student">{studentId}</span> : null}
-              {studentId && isResearchView ? (
-                <span className="panel-session" title={sessionId}>
-                  {sessionId}
+              {studentId && shortSessionId ? (
+                <span className="panel-session" title={`Session ${sessionId}`}>
+                  {shortSessionId}
                 </span>
               ) : null}
             </div>

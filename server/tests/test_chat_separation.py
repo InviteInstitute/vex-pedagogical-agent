@@ -109,3 +109,33 @@ def test_a_check_in_joins_both_chats(monkeypatch):
     for chat in sessions.CHATS:
         turns = sessions.get_recent_session_messages(student, "GO-Mars", session, chat=chat)
         assert [m["content"] for m in turns] == ["What do you expect to change?"]
+
+
+def test_check_ins_follow_the_saved_research_settings(monkeypatch):
+    used = []
+    monkeypatch.setattr(
+        proactive,
+        "generate_feedback",
+        lambda **kwargs: used.append(kwargs["settings"]) or {"llm_request": {}},
+    )
+    saved = {"mars-042": {"model": "granite", "temperature": 0.2, "trim_reply": False}}
+    monkeypatch.setattr(proactive, "get_agent_settings", saved.get)
+
+    proactive.generate_proactive_response("mars-042", str(uuid4()), "inactive")
+    proactive.generate_proactive_response("venus-7", str(uuid4()), "inactive")
+
+    assert used[0].model == "granite" and used[0].temperature == 0.2
+    assert used[0].trim_reply is False
+    assert used[1] == proactive.DEFAULT_GENERATION_SETTINGS  # nothing saved: production
+
+
+def test_the_research_page_saves_settings_for_check_ins(api, monkeypatch):
+    saved = []
+    monkeypatch.setattr(
+        "vex_agent.api.students.save_agent_settings", lambda *args: saved.append(args)
+    )
+    body = {"overrides": {"model": "granite", "max_tokens": 120}}
+    assert api.put("/v1/students/mars-042/agent-settings", json=body).status_code == 204
+    assert api.put("/v1/students/mars-042/agent-settings", json={}).status_code == 204
+    assert saved[0][1]["model"] == "granite" and saved[0][1]["max_tokens"] == 120
+    assert saved[1] == ("mars-042", None)  # production again: the saved row is cleared
