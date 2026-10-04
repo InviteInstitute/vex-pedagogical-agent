@@ -9,6 +9,7 @@
     /* ?embed=1: the client overlays the avatar on VEXcode VR, so let it show through
        (the build's TransparentBackground.jslib clears the canvas to transparent). */
     html.embed, html.embed body { background: transparent; }
+    html.embed #msg { display: none; }
     #unity-canvas { width: 100vw; height: 100vh; display: block; }
     #msg { position: fixed; top: 8px; left: 8px; color: #fff; font: 13px system-ui; opacity: .7; }
   </style>
@@ -31,6 +32,10 @@
     // The avatar speaks replies via the backend's /tts (needs TTS configured there).
     const audioFeedback = q.get("audio") === "true" ? "true" : "false";
     const embedded = q.get("embed") === "1" && window.parent !== window;
+    // ?mode=avatar: the embedding client draws the chat; Unity shows only the character
+    // (framed to the top `framing` of the body, 1 = head to feet) and says what it's sent.
+    const avatarOnly = q.get("mode") === "avatar";
+    const framing = q.get("framing") || "1";
     // ---------------------------------------------------------------------
 
     if (embedded) document.documentElement.classList.add("embed");
@@ -39,15 +44,31 @@
     // sends them only after the "avatar-ready" message below). Each goes to ChatLLM to
     // show and speak, with block names bolded for TextMeshPro like the bridge's replies.
     let unity = null;
+    const speechUrl = (text) => `${serverurl}/tts?text=${encodeURIComponent(text)}`;
     const deliver = (text) => {
       const shown = text.replace(/`([^`]+)`/g, "<b>$1</b>");
-      const audio = audioFeedback === "true" ? `${serverurl}/tts?text=${encodeURIComponent(text)}` : "";
+      const audio = audioFeedback === "true" ? speechUrl(text) : "";
       unity.SendMessage(CHATLLM_OBJECT, "ReceiveProactiveJson", JSON.stringify({ text: shown, audio }));
     };
     window.addEventListener("message", (event) => {
-      if (event.origin !== location.origin || event.source !== window.parent) return;
-      if (event.data?.type !== "proactive" || !event.data.text) return;
-      if (unity) deliver(event.data.text);
+      if (event.origin !== location.origin || event.source !== window.parent || !unity) return;
+      const data = event.data || {};
+      if (data.type === "proactive" && data.text) deliver(data.text);
+      // Avatar-only: say a reply (audio off -> gesture only, e.g. when muted).
+      if (data.type === "speak" && data.text) {
+        const audio = data.audio === false ? "" : speechUrl(data.text);
+        unity.SendMessage(CHATLLM_OBJECT, "Speak", JSON.stringify({ text: data.text, audio }));
+      }
+      if (data.type === "hush") unity.SendMessage(CHATLLM_OBJECT, "Hush");
+      if (data.type === "framing" && data.framing) {
+        unity.SendMessage(CHATLLM_OBJECT, "SetFraming", String(data.framing));
+      }
+    });
+    // Unity -> client: speech started/stopped (AvatarEvents.jslib).
+    window.addEventListener("avatar-speaking", (event) => {
+      if (embedded) {
+        window.parent.postMessage({ type: "avatar-speaking", speaking: event.detail }, location.origin);
+      }
     });
 
     const msg = document.getElementById("msg");
@@ -81,7 +102,9 @@
             student_id,
             audioFeedback,
             // In the corner over VEXcode VR: no sidebar, transparent behind the avatar.
-            compact: embedded ? "true" : "false",
+            compact: embedded && !avatarOnly ? "true" : "false",
+            mode: avatarOnly ? "avatar" : "chat",
+            framing,
           };
           unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
           unity = unityInstance;

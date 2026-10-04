@@ -1004,19 +1004,28 @@ button:disabled {
 
 /* ---------- Launcher ---------- */
 
-/* The student view's avatar: a transparent Unity frame in the corner the chat panel
-   uses, so VEXcode VR stays visible around and through it. */
-.avatar-agent {
+/* The tutor as a character standing at the chat panel (AvatarCharacter.jsx): a
+   transparent Unity frame placed from the panel's box, tucked a little behind its
+   edge. Decorative and click-through; everything it says is in the chat. It follows
+   the panel without easing, so it never trails behind a drag. */
+.avatar-character {
   position: absolute;
-  right: 24px;
-  bottom: 24px;
-  z-index: 3;
-  width: min(440px, calc(100vw - 48px));
-  height: min(720px, calc(100vh - 48px));
-  animation: panel-in 200ms var(--ease-out);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 360ms var(--ease-out),
+    transform 480ms var(--ease-out);
 }
 
-.avatar-agent iframe {
+.avatar-character.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.avatar-character iframe {
+  display: block;
   width: 100%;
   height: 100%;
   border: 0;
@@ -1024,21 +1033,50 @@ button:disabled {
   color-scheme: normal;
 }
 
-.avatar-research-link {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-control);
-  background: rgba(251, 252, 254, 0.85);
-  color: var(--ink-soft);
-  font-size: 0.75rem;
-  font-weight: 600;
-  box-shadow: 0 1px 2px rgba(16, 42, 72, 0.15);
+/* The reply the character is saying: three level bars in the turn's left margin, so
+   the text never reflows when speech starts or stops. */
+.turn.is-speaking {
+  position: relative;
 }
 
-.avatar-research-link:hover {
-  color: var(--vex-blue-deep);
+.speaking {
+  position: absolute;
+  top: 0.4em;
+  left: -12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.8em;
+}
+
+.speaking span {
+  width: 2px;
+  height: 35%;
+  border-radius: 1px;
+  background: var(--vex-blue);
+  animation: speaking-level 900ms ease-in-out infinite;
+}
+
+.speaking span:nth-child(2) {
+  animation-delay: -300ms;
+}
+
+.speaking span:nth-child(3) {
+  animation-delay: -600ms;
+}
+
+.turn-checkin .speaking span {
+  background: var(--checkin-ink);
+}
+
+@keyframes speaking-level {
+  0%,
+  100% {
+    height: 35%;
+  }
+  50% {
+    height: 100%;
+  }
 }
 
 .chat-launcher {
@@ -1147,11 +1185,11 @@ button:disabled {
     bottom: 12px;
   }
 
-  .avatar-agent {
-    right: 12px;
-    bottom: 12px;
-    width: calc(100vw - 24px);
-    height: min(640px, calc(100vh - 24px));
+  /* With the character, the chat starts lower so its head and shoulders can rise
+     over the panel's top edge (placeAvatar's phone placement). */
+  .has-avatar .chat-overlay:not(.chat-overlay-start) {
+    top: 132px !important;
+    height: calc(100dvh - 144px) !important;
   }
 
   .resize-grip {

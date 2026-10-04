@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Random = System.Random;
 
 [Serializable]
@@ -68,6 +69,12 @@ public class ChatLLM : MonoBehaviour
             if (serverInfo.compact == "true" && ChatWindow.Instance != null)
             {
                 ChatWindow.Instance.SetCompact(true);
+            }
+            // Avatar-only: the page owns the chat; this build only renders the character
+            // and speaks what the page sends to Speak.
+            if (serverInfo.mode == "avatar" && ChatWindow.Instance != null)
+            {
+                ChatWindow.Instance.SetAvatarOnly(ParseFraming(serverInfo.framing));
             }
         }
         catch (Exception e)
@@ -400,6 +407,78 @@ public class ChatLLM : MonoBehaviour
     // Proactive check-ins arrive from the embedding page (webgl/index.html relays the
     // backend's push stream) rather than as a reply to a request: show them in the open
     // chat and, with audio on, speak them like any reply.
+    // Avatar-only mode: the page sends each reply to say, {text, audio}. A new line
+    // interrupts the current one, like a person answering the latest question.
+    public void Speak(string json)
+    {
+        SpeechLine line;
+        try
+        {
+            line = JsonUtility.FromJson<SpeechLine>(json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error parsing speech JSON from JS: " + e.Message);
+            return;
+        }
+        if (line == null)
+        {
+            return;
+        }
+        voice.Stop();
+        if (!string.IsNullOrEmpty(line.audio))
+        {
+            StartCoroutine(PlayProactiveAudio(line.audio));
+        }
+        else
+        {
+            StartCoroutine(PlayAnimation());
+        }
+    }
+
+    // Stop talking now (the student muted the voice mid-sentence).
+    public void Hush()
+    {
+        voice.Stop();
+    }
+
+    // How much of the character the camera shows, from the head down: 1 is head to
+    // feet, ~0.45 head and shoulders. The page changes it with its layout (phone).
+    public void SetFraming(string fraction)
+    {
+        if (ChatWindow.Instance != null)
+        {
+            ChatWindow.Instance.FrameAvatar(ParseFraming(fraction));
+        }
+    }
+
+    private static float ParseFraming(string value)
+    {
+        return float.TryParse(value, System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out float fraction) ? fraction : 1f;
+    }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void AvatarSpeakingChanged(int speaking);
+#else
+    private static void AvatarSpeakingChanged(int speaking) { }
+#endif
+
+    private bool wasSpeaking = false;
+
+    // Tell the page when speech starts and stops (AvatarEvents.jslib), so it can show
+    // which reply is being spoken.
+    private void Update()
+    {
+        bool speaking = voice != null && voice.isPlaying;
+        if (speaking != wasSpeaking)
+        {
+            wasSpeaking = speaking;
+            AvatarSpeakingChanged(speaking ? 1 : 0);
+        }
+    }
+
     public void ReceiveProactiveJson(string json)
     {
         ProactiveMessage message;
@@ -450,6 +529,13 @@ public class ChatLLM : MonoBehaviour
     }
 
     [System.Serializable]
+    private class SpeechLine
+    {
+        public string text;
+        public string audio;
+    }
+
+    [System.Serializable]
     private class ProactiveMessage
     {
         public string text;
@@ -481,5 +567,7 @@ public class ChatLLM : MonoBehaviour
         public string audioFeedback;
         public string student_id;
         public string compact;
+        public string mode;
+        public string framing;
     }
 }

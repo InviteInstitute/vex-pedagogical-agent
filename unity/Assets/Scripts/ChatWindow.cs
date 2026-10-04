@@ -65,6 +65,12 @@ public class ChatWindow : MonoBehaviour
     private bool sidebarExpanded = true;
     // Set by SetCompact; read in Start too, since the config can arrive either side of it.
     private bool isCompact = false;
+    // Avatar-only: the page draws the chat; the camera frames just the character.
+    private bool isAvatarOnly = false;
+    private float avatarFraming = 1f;
+    private Vector2 framedFor = Vector2.zero;
+    private Bounds avatarBounds;
+    private bool avatarBoundsKnown = false;
     private float sidebarWidth = 320f;
 
     // Agent Centering State
@@ -230,6 +236,111 @@ public class ChatWindow : MonoBehaviour
     private void LateUpdate()
     {
         UpdateAgentPositionAndRotation();
+
+        // Re-frame when the page resizes the avatar's box or changes the framing.
+        if (isAvatarOnly)
+        {
+            Vector2 now = new Vector2(Screen.width, Screen.height);
+            if (now != framedFor)
+            {
+                framedFor = now;
+                FrameCamera();
+            }
+        }
+    }
+
+    // Avatar-only mode (webgl/index.html ?mode=avatar): the page's own chat panel holds
+    // the conversation, so hide this UI, clear everything behind the character, and
+    // frame the camera on it.
+    public void SetAvatarOnly(float framing)
+    {
+        isAvatarOnly = true;
+        Canvas canvas = mainCanvas != null ? mainCanvas : GetComponent<Canvas>();
+        if (canvas != null)
+        {
+            canvas.enabled = false;
+        }
+        if (Camera.main != null)
+        {
+            Camera.main.clearFlags = CameraClearFlags.SolidColor;
+            Camera.main.backgroundColor = Color.clear;
+        }
+        FrameAvatar(framing);
+    }
+
+    public void FrameAvatar(float framing)
+    {
+        avatarFraming = Mathf.Clamp(framing, 0.25f, 1f);
+        framedFor = Vector2.zero; // re-frame on the next LateUpdate
+    }
+
+    // Fit the top `avatarFraming` of the character (1 = head to feet) to the screen,
+    // keeping the camera's angle, with the cut line (the feet, or below the shoulders)
+    // on the frame's bottom edge so the character stands on the page's baseline.
+    // Height comes from the renderer bounds, which match the character vertically;
+    // their width is inflated (hidden outfit parts), so width is taken as a share of
+    // the height instead, which otherwise framed the character far too small.
+    private void FrameCamera()
+    {
+        Camera cam = Camera.main;
+        if (cam == null || agentObject == null)
+        {
+            return;
+        }
+        if (!avatarBoundsKnown && !MeasureAvatar())
+        {
+            return;
+        }
+
+        // Level the camera so "up" on screen is world up: the scene's slight downward
+        // tilt threw the framing off, badly in a head-and-shoulders close-up.
+        cam.transform.rotation = Quaternion.Euler(0f, cam.transform.eulerAngles.y, 0f);
+
+        float bodyHeight = avatarBounds.size.y;
+        float shownHeight = bodyHeight * avatarFraming;
+        // Full body keeps room for arms reaching out in gestures; head and shoulders
+        // frames the shoulders and lets a gesture leave the frame.
+        float shownWidth = bodyHeight * (avatarFraming >= 0.99f ? 0.44f : 0.32f);
+
+        // Distance that fits the shown height (plus headroom) and width.
+        float halfV = cam.fieldOfView * 0.5f * Mathf.Deg2Rad;
+        float halfH = Mathf.Atan(Mathf.Tan(halfV) * cam.aspect);
+        // Headroom: more in a close-up, where a nod would otherwise clip the head.
+        float headroom = avatarFraming >= 0.99f ? 1.06f : 1.14f;
+        float fitHeight = (shownHeight * headroom * 0.5f) / Mathf.Tan(halfV);
+        float fitWidth = (shownWidth * 0.5f) / Mathf.Tan(halfH);
+        float distance = Mathf.Max(fitHeight, fitWidth);
+        // A head-and-shoulders close-up puts the camera nearer than the default near
+        // plane (0.3), which cut the face away; keep the plane well in front of the body.
+        cam.nearClipPlane = Mathf.Max(0.01f, Mathf.Min(cam.nearClipPlane, distance * 0.2f));
+
+        // Put the cut line on the bottom edge; any spare height goes above the head.
+        float halfVisible = Mathf.Tan(halfV) * distance;
+        float cutLine = avatarBounds.max.y - shownHeight - bodyHeight * 0.01f;
+        // Centre on the head: the bounds' inflated width can sit off to one side.
+        Vector3 middle = foundHeadBone && headBoneTransform != null ? headBoneTransform.position : avatarBounds.center;
+        Vector3 target = new Vector3(middle.x, cutLine + halfVisible, middle.z);
+
+        cam.transform.position = target - cam.transform.forward * distance;
+        Debug.Log($"FrameCamera: framing {avatarFraming:F2}, body height {bodyHeight:F2}, " +
+            $"aspect {cam.aspect:F2}, fit {(fitHeight >= fitWidth ? "height" : "width")}");
+    }
+
+    // The character's extent from its renderers (first frame, idle pose).
+    private bool MeasureAvatar()
+    {
+        Renderer[] renderers = agentObject.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            return false;
+        }
+        avatarBounds = renderers[0].bounds;
+        foreach (Renderer r in renderers)
+        {
+            avatarBounds.Encapsulate(r.bounds);
+        }
+        avatarBoundsKnown = true;
+        return true;
     }
 
     private void UpdateAgentPositionAndRotation()

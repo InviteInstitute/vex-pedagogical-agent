@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import App from "./App.jsx";
 
-// With the avatar's WebGL build deployed, a signed-in student sees the avatar instead
-// of the text chat; the research view keeps the text chat.
+// With the avatar's WebGL build deployed, the chat panel stays the conversation and the
+// character stands beside it: a voice toggle in the header, and the reply being spoken
+// is marked.
 beforeEach(() => {
   window.localStorage.clear();
   window.HTMLElement.prototype.scrollIntoView = () => {};
@@ -32,19 +33,34 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("avatar student view", () => {
-  it("replaces the text chat with the avatar, and research view brings it back", async () => {
+describe("avatar beside the chat", () => {
+  it("keeps the chat, adds a voice toggle, and marks the reply being spoken", async () => {
     const user = userEvent.setup();
-    render(<App />);
+    const { container } = render(<App />);
     await user.type(screen.getByLabelText("Student ID"), "mars-042");
     await user.click(screen.getByRole("button", { name: "Start chat" }));
 
-    const avatar = await screen.findByTitle("INVITE Agent");
-    expect(avatar.getAttribute("src")).toContain("student_id=mars-042");
-    expect(screen.queryByRole("region", { name: "Conversation" })).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Research view" }));
     expect(await screen.findByRole("region", { name: "Conversation" })).toBeInTheDocument();
-    expect(screen.queryByTitle("INVITE Agent")).not.toBeInTheDocument();
+    const voice = await screen.findByRole("button", { name: "Mute the tutor's voice" });
+    const frame = container.querySelector('iframe[title="INVITE Agent character"]');
+    expect(frame).not.toBeNull();
+
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: { type: "avatar-speaking", speaking: true },
+          origin: window.location.origin,
+          source: frame.contentWindow,
+        }),
+      );
+    });
+    expect(container.querySelector(".turn.is-speaking .speaking")).not.toBeNull();
+
+    await user.click(voice);
+    expect(screen.getByRole("button", { name: "Turn the tutor's voice on" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(JSON.parse(window.localStorage.getItem("vex-agent:muted"))).toBe(true);
   });
 });

@@ -4,11 +4,13 @@ import {
   CaretDown,
   ChatCircleText,
   Question,
+  SpeakerHigh,
+  SpeakerSlash,
   ThumbsDown,
   ThumbsUp,
   WarningCircle,
 } from "@phosphor-icons/react";
-import AvatarAgent, { isAvatarBuildAvailable } from "./AvatarAgent.jsx";
+import AvatarCharacter, { isAvatarBuildAvailable } from "./AvatarCharacter.jsx";
 import ResearchLab, {
   EMPTY_AGENT_SETTINGS,
   buildOverrides,
@@ -124,6 +126,7 @@ export function renderMessageBody(text) {
 
 const VIEW_STORAGE_KEY = "vex-agent:view";
 const AGENT_SETTINGS_STORAGE_KEY = "vex-agent:agent-settings";
+const MUTED_STORAGE_KEY = "vex-agent:muted";
 
 function readStored(key, fallback) {
   try {
@@ -172,6 +175,8 @@ const ICONS = {
   thumbDown: ThumbsDown,
   alert: WarningCircle,
   chat: ChatCircleText,
+  voiceOn: SpeakerHigh,
+  voiceOff: SpeakerSlash,
 };
 
 function Icon({ name, weight = "bold" }) {
@@ -265,6 +270,9 @@ function App() {
   // Whether the Unity avatar's WebGL build is deployed; until it is, students get
   // the text chat panel.
   const [isAvatarAvailable, setIsAvatarAvailable] = useState(false);
+  // The character's voice: a per-browser choice, so a quiet classroom stays quiet.
+  const [isMuted, setIsMuted] = useState(() => readStored(MUTED_STORAGE_KEY, false) === true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const panelRef = useRef(null);
   const interactionRef = useRef(null);
   const messageListRef = useRef(null);
@@ -280,10 +288,17 @@ function App() {
   const showAgentTab = isResearchView && researchTab === "agent";
   // The start card sizes to its content; only the chat itself is resizable.
   const canResize = Boolean(studentId);
-  // Once signed in, the student view is the avatar (when built); the research view
-  // keeps the text panel for the telemetry and the Agent tab.
-  const showAvatar = Boolean(studentId) && !isResearchView && isAvatarAvailable;
-  const checkIns = chats.student.filter((message) => message.proactive);
+  // What the character says: the newest finished reply or check-in in this view,
+  // once a student has signed in (the start card stays silent).
+  const latestReply = studentId
+    ? [...messages]
+        .reverse()
+        .find((message) => message.role === "assistant" && !message.isLoading && !message.error)
+    : null;
+  const utterance = latestReply?.body
+    ? { id: `${view}:${latestReply.id}`, messageId: latestReply.id, text: latestReply.body }
+    : null;
+  const speakingMessageId = isAvatarAvailable && isSpeaking ? utterance?.messageId : null;
 
   useEffect(() => {
     isAvatarBuildAvailable().then(setIsAvatarAvailable);
@@ -305,6 +320,10 @@ function App() {
   useEffect(() => {
     writeStored(AGENT_SETTINGS_STORAGE_KEY, agentSettings);
   }, [agentSettings]);
+
+  useEffect(() => {
+    writeStored(MUTED_STORAGE_KEY, isMuted);
+  }, [isMuted]);
 
   useEffect(() => {
     if (isResearchView && studentId && !researchConfig && !isLoadingConfig && !configError) {
@@ -988,20 +1007,24 @@ function App() {
   };
 
   return (
-    <main className="overlay-shell">
+    <main className={`overlay-shell ${isAvatarAvailable ? "has-avatar" : ""}`}>
       <iframe
         className={`background-frame ${isInteractingWithPanel ? "background-frame-inactive" : ""}`}
         src="https://research-vr.vex.com/"
         title="Research VR"
       />
 
-      {showAvatar ? (
-        <AvatarAgent
-          studentId={studentId}
-          checkIns={checkIns}
-          onResearchView={() => setView("research")}
+      {isAvatarAvailable ? (
+        <AvatarCharacter
+          panelRef={panelRef}
+          layoutKey={`${panelRect.x},${panelRect.y},${panelRect.width},${panelRect.height},${isChatOpen},${studentId}`}
+          utterance={utterance}
+          muted={isMuted}
+          onSpeakingChange={setIsSpeaking}
         />
-      ) : isChatOpen ? (
+      ) : null}
+
+      {isChatOpen ? (
         <section
           ref={panelRef}
           className={`chat-overlay ${!studentId ? "chat-overlay-start" : ""} ${
@@ -1041,6 +1064,18 @@ function App() {
               >
                 <Icon name="help" />
                 {pendingAction === "help" ? "Asking…" : "Help"}
+              </button>
+            ) : null}
+            {studentId && isAvatarAvailable ? (
+              <button
+                type="button"
+                className="panel-icon-button"
+                onClick={() => setIsMuted((current) => !current)}
+                aria-pressed={isMuted}
+                aria-label={isMuted ? "Turn the tutor's voice on" : "Mute the tutor's voice"}
+                title={isMuted ? "Turn voice on" : "Mute voice"}
+              >
+                <Icon name={isMuted ? "voiceOff" : "voiceOn"} />
               </button>
             ) : null}
             <button
@@ -1146,7 +1181,7 @@ function App() {
                       key={message.id}
                       className={`turn turn-agent ${message.proactive ? "turn-checkin" : ""} ${
                         message.error ? "turn-error" : ""
-                      }`}
+                      } ${message.id === speakingMessageId ? "is-speaking" : ""}`}
                     >
                       {message.proactive ? (
                         <p className="turn-label">
@@ -1166,6 +1201,13 @@ function App() {
                         ) : (
                           renderMessageBody(message.body)
                         )}
+                        {message.id === speakingMessageId ? (
+                          <span className="speaking" aria-hidden="true">
+                            <span />
+                            <span />
+                            <span />
+                          </span>
+                        ) : null}
                       </div>
                       {renderResearchDetails(message)}
                       {message.canFeedback ? renderFeedback(message) : null}
