@@ -27,7 +27,7 @@ import random
 import threading
 
 from vex_agent.data.db import all_students, get_latest_session_id_for_student
-from vex_agent.services.logsync import sync_invite_hub_logs
+from vex_agent.services.logsync import student_recency_hours, sync_invite_hub_logs
 from vex_agent.services.proactive import run_proactive_tick
 
 log = logging.getLogger("trigger_daemon")
@@ -62,12 +62,6 @@ def idle_max_s() -> float:
     Defaults to 30s -- real headroom above the base interval, so quiet stretches
     actually back off instead of the old default (== base, a no-op ceiling)."""
     return float(os.getenv("TRIGGER_IDLE_MAX_S", "30"))
-
-
-def student_recency_hours() -> float:
-    """Only chase students with an event in the last N hours. Bounds the first-tick
-    inactive blast (spec §8). Default 24."""
-    return float(os.getenv("TRIGGER_STUDENT_RECENCY_HOURS", "24"))
 
 
 def in_scope_students() -> set[str]:

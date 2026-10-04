@@ -46,3 +46,30 @@ def test_parse_event_time_tolerates_misspelling_and_z():
     assert fh.parse_event_time({"received_at": "2026-07-21T18:00:00+00:00"}) is not None
     assert fh.parse_event_time({}) is None
     assert fh.parse_event_time({"recieved_at": "not-a-date"}) is None
+
+
+def test_fresh_database_syncs_only_the_recency_window(monkeypatch):
+    """No cursor yet: the full sync starts at the daemon's recency window instead of
+    draining the Hub's whole history, which never finished between restarts."""
+    from datetime import UTC, datetime, timedelta
+
+    from vex_agent.services import logsync
+
+    seen = {}
+
+    def fake_fetch(base_url, token, query_string, **kwargs):
+        seen.update(kwargs)
+        return []
+
+    monkeypatch.setenv("TRIGGER_STUDENT_RECENCY_HOURS", "6")
+    monkeypatch.setattr(logsync, "get_auth_token", lambda base_url: "t")
+    monkeypatch.setattr(logsync, "get_ingest_cursor", lambda: {})
+    monkeypatch.setattr(logsync, "fetch_vex_logs_incremental", fake_fetch)
+
+    logsync.sync_invite_hub_logs()
+    start = datetime.fromisoformat(seen["date_from"])
+    assert abs(start - (datetime.now(UTC) - timedelta(hours=6))) < timedelta(minutes=1)
+
+    # A per-student fetch still reaches that student's whole history.
+    logsync.sync_invite_hub_logs(student_id="mars-042", advance_cursor=False)
+    assert seen["date_from"] is None

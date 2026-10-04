@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 
 # Rewind the dateFrom cursor a hair so an event landing on the boundary is never
 # skipped; the last_source_log_id filter (and the ON CONFLICT idempotency on
@@ -21,6 +21,13 @@ from vex_agent.ingest.fetch_invite_hub_logs import (
     parse_source_log_id,
 )
 from vex_agent.ingest.parse_event_logs import insert_rows, parse_records
+
+
+def student_recency_hours() -> float:
+    """Only chase students with an event in the last N hours. Bounds the daemon's
+    first-tick inactive blast (spec §8), and how far back a fresh database's first
+    sync reaches. Default 24."""
+    return float(os.getenv("TRIGGER_STUDENT_RECENCY_HOURS", "24"))
 
 
 def sync_invite_hub_logs(*, student_id: str | None = None, advance_cursor: bool = True) -> int:
@@ -49,6 +56,13 @@ def sync_invite_hub_logs(*, student_id: str | None = None, advance_cursor: bool 
     date_from = None
     if last_event_dt is not None:
         date_from = (last_event_dt - timedelta(seconds=SYNC_OVERLAP_SECONDS)).isoformat()
+    elif student_id is None:
+        # A fresh database has no cursor. Draining the Hub's whole history (hundreds
+        # of thousands of logs) takes hours, saves the cursor only at the end, and
+        # starts over on every restart, so the daemon never got to its students.
+        # It only acts on recent telemetry, so start from its recency window.
+        start = datetime.now(UTC) - timedelta(hours=student_recency_hours())
+        date_from = start.isoformat()
 
     query_string = build_query_string(student_id=student_id)
     try:
