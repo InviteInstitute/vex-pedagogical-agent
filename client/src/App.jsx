@@ -125,7 +125,6 @@ export function renderMessageBody(text) {
   return elements;
 }
 
-const VIEW_STORAGE_KEY = "vex-agent:view";
 const AGENT_SETTINGS_STORAGE_KEY = "vex-agent:agent-settings";
 const MUTED_STORAGE_KEY = "vex-agent:muted";
 
@@ -146,16 +145,6 @@ function writeStored(key, value) {
       window.localStorage.setItem(key, JSON.stringify(value));
     }
   } catch {}
-}
-
-// Student view is what a student sees in class; research view adds the
-// telemetry behind each message (proactive trigger, model, session id).
-function readStoredView() {
-  try {
-    return window.localStorage.getItem(VIEW_STORAGE_KEY) === "research" ? "research" : "student";
-  } catch {
-    return "student";
-  }
 }
 
 function createPendingAssistantMessage() {
@@ -256,7 +245,9 @@ function App() {
   const [isChatOpen, setIsChatOpen] = useState(true);
   const [isInteractingWithPanel, setIsInteractingWithPanel] = useState(false);
   const [hoveredResizeHandle, setHoveredResizeHandle] = useState(null);
-  const [view, setView] = useState(readStoredView);
+  // Every visit starts in the student view (what a student sees in class); the
+  // research view, the agent settings page, is one tap away and not remembered.
+  const [view, setView] = useState("student");
   const [researchConfig, setResearchConfig] = useState(null);
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const [configError, setConfigError] = useState("");
@@ -320,12 +311,6 @@ function App() {
     : messages
         .slice(seenMessageCount)
         .filter((message) => message.role === "assistant" && !message.isLoading).length;
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(VIEW_STORAGE_KEY, view);
-    } catch {}
-  }, [view]);
 
   useEffect(() => {
     writeStored(AGENT_SETTINGS_STORAGE_KEY, agentSettings);
@@ -1166,8 +1151,6 @@ function App() {
                       onRetry={loadResearchConfig}
                     />
                   </div>
-
-                  <div className="research-foot">{viewToggle}</div>
                 </section>
               ) : (
                 <>
@@ -1265,10 +1248,11 @@ function App() {
                         {voiceError}
                       </p>
                     ) : null}
-                    <div className="composer-foot">{viewToggle}</div>
                   </form>
                 </>
               )}
+              {/* One footer for both views, so the toggle never moves. */}
+              <div className="panel-foot">{viewToggle}</div>
               <span className="resize-grip" aria-hidden="true" />
             </>
           )}

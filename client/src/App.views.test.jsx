@@ -73,10 +73,30 @@ describe("the chat and the research settings page", () => {
     expect(screen.getByRole("region", { name: "Agent settings" })).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: "Conversation" })).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Message")).not.toBeInTheDocument();
-    expect(window.localStorage.getItem("vex-agent:view")).toBe("research");
 
     await user.click(screen.getByRole("button", { name: "Student" }));
     expect(screen.getByText("What do you expect the robot to do next time?")).toBeInTheDocument();
+  });
+
+  it("starts every visit in the student view, with the toggle in the same place", async () => {
+    const user = userEvent.setup();
+    const first = render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    await screen.findByRole("region", { name: "Conversation" });
+    const footer = () => screen.getByRole("group", { name: "View" }).parentElement;
+    const studentFooter = footer();
+    await user.click(screen.getByRole("button", { name: "Research" }));
+    // The same footer element holds the toggle on the settings page.
+    expect(footer()).toBe(studentFooter);
+    expect(footer()).toHaveClass("panel-foot");
+    first.unmount();
+
+    render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    expect(await screen.findByRole("region", { name: "Conversation" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Student" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("counts replies that arrive while the chat is collapsed", async () => {

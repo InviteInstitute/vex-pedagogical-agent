@@ -62,7 +62,6 @@ describe("research settings page", () => {
 
   beforeEach(() => {
     window.localStorage.clear();
-    window.localStorage.setItem("vex-agent:view", "research");
     window.HTMLElement.prototype.scrollIntoView = () => {};
     vi.stubGlobal(
       "EventSource",
@@ -117,6 +116,7 @@ describe("research settings page", () => {
   it("applies the settings chosen on the research page to the chat", async () => {
     const user = userEvent.setup();
     await startChat(user);
+    await user.click(await screen.findByRole("button", { name: "Research" }));
 
     // The research view is only the settings page: no tabs, no second chat.
     expect(screen.queryByRole("tab")).not.toBeInTheDocument();
@@ -139,7 +139,6 @@ describe("research settings page", () => {
   });
 
   it("says plainly when the session is out of tokens", async () => {
-    window.localStorage.setItem("vex-agent:view", "student");
     responsesReply = {
       status: 429,
       body: {
@@ -160,7 +159,6 @@ describe("research settings page", () => {
   });
 
   it("keeps using saved settings after a reload, straight from the chat", async () => {
-    window.localStorage.setItem("vex-agent:view", "student");
     window.localStorage.setItem("vex-agent:agent-settings", JSON.stringify({ model: "glm-5.3" }));
     const user = userEvent.setup();
     await startChat(user);
