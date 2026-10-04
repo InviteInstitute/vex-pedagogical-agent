@@ -57,5 +57,4 @@ webgl/build_out/
 server/models/
 
 # Client build swap folders (deploys build into dist.next, keep dist.prev to roll back)
-client/dist.next/
-client/dist.prev/
+client/dist.*/
