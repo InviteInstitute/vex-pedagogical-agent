@@ -207,8 +207,6 @@ export default function ResearchLab({
         </details>
       </div>
 
-      <p className="lab-hint">Check-ins from the proactive daemon use these settings too.</p>
-
       <div className="lab-actions">
         <button
           type="button"
