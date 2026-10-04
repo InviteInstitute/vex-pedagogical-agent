@@ -943,6 +943,67 @@ button:disabled {
   background: #a9cbef;
 }
 
+/* The mic: a quiet icon beside Send, and while recording a red pill with a stop
+   icon and the elapsed time, so it is obvious the mic is live. */
+.voice-button {
+  height: 2.2rem;
+  min-width: 2.2rem;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.voice-button .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.voice-button:hover:not(:disabled):not(.is-recording) {
+  background: var(--vex-blue-wash);
+  color: var(--vex-blue-deep);
+}
+
+.voice-button:disabled {
+  opacity: 0.45;
+}
+
+.voice-button.is-recording {
+  padding: 0 0.7rem 0 0.6rem;
+  background: var(--danger-wash);
+  color: var(--danger);
+}
+
+.voice-button.is-recording:hover {
+  background: var(--danger-line);
+}
+
+.voice-button.is-recording .icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  animation: thinking-pulse 1.1s infinite ease-in-out;
+}
+
+.voice-timer {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.composer-error {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--danger);
+}
+
 .composer-foot {
   margin-top: 0.5rem;
   display: flex;

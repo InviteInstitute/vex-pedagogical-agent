@@ -112,6 +112,10 @@ class StudentResponseResponse(BaseModel):
     status: Literal["received"]
 
 
+class TranscriptionResponse(BaseModel):
+    text: str = Field(description="What the student said, as text (empty if nothing was heard).")
+
+
 class FeedbackRequest(BaseModel):
     thumb: Literal["up", "down"] = Field(description="Student reaction.")
     comment: str | None = Field(

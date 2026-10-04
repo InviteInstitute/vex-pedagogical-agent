@@ -56,6 +56,7 @@ export function placeAvatar(panel, viewport) {
 export default function AvatarCharacter({
   panelRef,
   visible = true,
+  hushSignal = 0,
   layoutKey,
   utterance,
   muted,
@@ -129,6 +130,13 @@ export default function AvatarCharacter({
       post({ type: "hush" });
     }
   }, [isReady, muted]);
+
+  // The student started speaking: stop talking, or the mic would hear the tutor.
+  useEffect(() => {
+    if (isReady && hushSignal) {
+      post({ type: "hush" });
+    }
+  }, [isReady, hushSignal]);
 
   // Say each new reply once. Muted, the character still gestures, silently.
   useEffect(() => {

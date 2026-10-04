@@ -93,14 +93,7 @@ def test_text_endpoint_rejects_missing_student_turn(monkeypatch):
 def test_voice_endpoint_transcribes_then_feeds_pipeline(monkeypatch):
     seen = {}
     _stub_pipeline(monkeypatch, seen)
-    speech_client = SimpleNamespace(
-        audio=SimpleNamespace(
-            transcriptions=SimpleNamespace(
-                create=lambda *, model, file: SimpleNamespace(text=" spoken words ")
-            )
-        )
-    )
-    monkeypatch.setattr(unity, "get_openai_client", lambda: speech_client)
+    monkeypatch.setattr(unity, "transcribe", lambda filename, audio: "spoken words")
     reply = (
         TestClient(app)
         .post(

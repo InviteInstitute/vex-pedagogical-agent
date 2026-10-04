@@ -3,6 +3,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import App from "./App.jsx";
+import { installFakeMic } from "./test/fakeMic.js";
 
 // With the avatar's WebGL build deployed, the chat panel stays the conversation and the
 // character stands beside it: a voice toggle in the header, and the reply being spoken
@@ -111,5 +112,63 @@ describe("avatar beside the chat", () => {
     await waitFor(() => expect(tutor()).not.toHaveClass("is-shown"));
     await user.click(screen.getByRole("button", { name: /Open chat/ }));
     await waitFor(() => expect(tutor()).toHaveClass("is-shown"));
+  });
+
+  it("sends a spoken question as what the tutor heard, and hushes it while recording", async () => {
+    installFakeMic();
+    const posted = [];
+    fetch.mockImplementation((url, options = {}) => {
+      posted.push([String(url), options.body]);
+      const body = String(url).endsWith("/transcriptions")
+        ? { text: "why won't my robot turn" }
+        : { session_id: "session-1" };
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
+    });
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    const frame = container.querySelector('iframe[title="INVITE Agent character"]');
+    const postToTutor = vi.spyOn(frame.contentWindow, "postMessage");
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: { type: "avatar-ready" },
+          origin: window.location.origin,
+          source: frame.contentWindow,
+        }),
+      );
+    });
+
+    await user.click(await screen.findByRole("button", { name: "Ask out loud" }));
+    expect(postToTutor).toHaveBeenCalledWith({ type: "hush" }, window.location.origin);
+    await user.click(screen.getByRole("button", { name: "Stop and send your question" }));
+
+    expect(await screen.findByText("why won't my robot turn")).toBeInTheDocument();
+    const upload = posted.find(([url]) => url.endsWith("/students/mars-042/transcriptions"));
+    expect(upload[1]).toBeInstanceOf(FormData);
+    const asked = posted.filter(([url]) => url.endsWith("/responses")).at(-1);
+    expect(JSON.parse(asked[1]).student_message).toBe("why won't my robot turn");
+  });
+
+  it("asks again when nothing was heard", async () => {
+    installFakeMic();
+    fetch.mockImplementation((url) =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve(
+            String(url).endsWith("/transcriptions") ? { text: "  " } : { session_id: "s" },
+          ),
+      }),
+    );
+    const user = userEvent.setup();
+    render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    await user.click(await screen.findByRole("button", { name: "Ask out loud" }));
+    await user.click(screen.getByRole("button", { name: "Stop and send your question" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("I didn't catch that");
   });
 });

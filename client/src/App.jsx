@@ -11,6 +11,7 @@ import {
   WarningCircle,
 } from "@phosphor-icons/react";
 import AvatarCharacter, { isAvatarBuildAvailable } from "./AvatarCharacter.jsx";
+import VoiceButton, { canRecordVoice } from "./VoiceButton.jsx";
 import ResearchLab, {
   EMPTY_AGENT_SETTINGS,
   buildOverrides,
@@ -273,6 +274,10 @@ function App() {
   // The character's voice: a per-browser choice, so a quiet classroom stays quiet.
   const [isMuted, setIsMuted] = useState(() => readStored(MUTED_STORAGE_KEY, false) === true);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  // Voice questions: why the last one couldn't be used, and a bump that tells the
+  // tutor to stop talking when the student starts speaking.
+  const [voiceError, setVoiceError] = useState("");
+  const [hushSignal, setHushSignal] = useState(0);
   const panelRef = useRef(null);
   const interactionRef = useRef(null);
   const messageListRef = useRef(null);
@@ -619,6 +624,17 @@ function App() {
     return data;
   };
 
+  // A file upload (the mic's recording); same error handling as postJson.
+  const postForm = async (path, formData) => {
+    const response = await fetch(`${apiBase}${path}`, { method: "POST", body: formData });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      checkTurnstileRequired(response, data);
+      throw new Error(data.detail || `Request failed with status ${response.status}`);
+    }
+    return data;
+  };
+
   const getJson = async (path, headers = {}) => {
     const response = await fetch(`${apiBase}${path}`, { headers });
     const data = await response.json().catch(() => ({}));
@@ -868,6 +884,35 @@ function App() {
     });
   };
 
+  // A spoken question: turn it into text, then ask it like a typed one, so the student
+  // sees exactly what the tutor heard.
+  const handleVoiceRecorded = async (recording) => {
+    setVoiceError("");
+    setPendingAction("transcribing");
+    let text = "";
+    try {
+      const form = new FormData();
+      form.append("audio", recording, "question.webm");
+      text = (await postForm(`/students/${studentId}/transcriptions`, form)).text.trim();
+    } catch (error) {
+      setVoiceError(error.message);
+      setPendingAction("");
+      return;
+    }
+    setPendingAction("");
+    if (!text) {
+      setVoiceError("I didn't catch that. Try again a little closer to the mic, or type it.");
+      return;
+    }
+    askAgent({
+      shownText: text,
+      message: text,
+      studentMessage: text,
+      action: "message",
+      fallbackBody: "The agent ran into a delay. Try asking again in a moment.",
+    });
+  };
+
   const handleHelp = () => {
     askAgent({
       shownText: "Help",
@@ -1032,6 +1077,7 @@ function App() {
           layoutKey={`${panelRect.x},${panelRect.y},${panelRect.width},${panelRect.height},${isChatOpen},${studentId}`}
           utterance={utterance}
           muted={isMuted}
+          hushSignal={hushSignal}
           onSpeakingChange={setIsSpeaking}
         />
       ) : null}
@@ -1253,8 +1299,23 @@ function App() {
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleComposerKeyDown}
                     maxLength={2000}
-                    placeholder="Ask about your program, your bug, or what to try next."
+                    placeholder={
+                      pendingAction === "transcribing"
+                        ? "Turning what you said into text…"
+                        : "Ask about your program, your bug, or what to try next."
+                    }
                   />
+                  {canRecordVoice() ? (
+                    <VoiceButton
+                      disabled={Boolean(pendingAction)}
+                      onRecordingStart={() => {
+                        setVoiceError("");
+                        setHushSignal((current) => current + 1);
+                      }}
+                      onRecorded={handleVoiceRecorded}
+                      onError={setVoiceError}
+                    />
+                  ) : null}
                   <button
                     type="submit"
                     className="send-button"
@@ -1264,6 +1325,11 @@ function App() {
                     {pendingAction === "message" ? "Sending…" : "Send"}
                   </button>
                 </div>
+                {voiceError ? (
+                  <p className="composer-error" role="alert">
+                    {voiceError}
+                  </p>
+                ) : null}
                 <div className="composer-foot">
                   <div className="view-toggle" role="group" aria-label="View">
                     {[

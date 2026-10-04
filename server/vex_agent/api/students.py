@@ -1,8 +1,9 @@
 import logging
 from time import monotonic
+from typing import Annotated
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, File, HTTPException, Request, UploadFile
 
 from vex_agent.api.schemas import (
     FeedbackRequest,
@@ -12,6 +13,7 @@ from vex_agent.api.schemas import (
     SessionResolutionResponse,
     StudentResponseRequest,
     StudentResponseResponse,
+    TranscriptionResponse,
 )
 from vex_agent.api.turnstile import COOKIE_NAME
 from vex_agent.config import DEFAULT_PLAYGROUND, get_navigator_model
@@ -30,7 +32,7 @@ from vex_agent.domain.metrics import (
     select_current_playground_segment,
 )
 from vex_agent.domain.question_types import QUESTION_TYPE_SPECS
-from vex_agent.llm.client import DEFAULT_GENERATION_SETTINGS, GenerationSettings
+from vex_agent.llm.client import DEFAULT_GENERATION_SETTINGS, GenerationSettings, transcribe
 from vex_agent.services import budget, tts
 from vex_agent.services.feedback import generate_feedback
 from vex_agent.services.logsync import sync_invite_hub_logs
@@ -417,3 +419,40 @@ def create_feedback(
         comment=payload.comment,
         status="received",
     )
+
+
+# A spoken question for the chat's mic button. nginx's default body limit on /v1 is
+# 1MB, about a minute of the browser's Opus; the client stops at 30 seconds.
+MAX_AUDIO_BYTES = 1_000_000
+
+
+@router.post("/students/{student_id}/transcriptions", response_model=TranscriptionResponse)
+def transcribe_question(
+    student_id: str,
+    request: Request,
+    audio: Annotated[UploadFile, File()],
+) -> TranscriptionResponse:
+    """What the student said, as text. Behind the same bot gate and token budget as a
+    reply, since it runs on the same LLM gateway."""
+    budget_key = budget.budget_key(request.cookies.get(COOKIE_NAME), student_id)
+    try:
+        budget.check_budget(budget_key)
+    except budget.TokenBudgetExceeded as error:
+        raise HTTPException(status_code=429, detail=str(error)) from error
+    data = audio.file.read(MAX_AUDIO_BYTES + 1)
+    if not data:
+        raise HTTPException(status_code=400, detail="The recording was empty.")
+    if len(data) > MAX_AUDIO_BYTES:
+        raise HTTPException(
+            status_code=413, detail="That recording is too long. Keep it under a minute."
+        )
+    try:
+        text = transcribe(audio.filename or "question.webm", data)
+    except Exception as error:
+        logger.exception("Transcription failed for %s", student_id)
+        raise HTTPException(
+            status_code=502,
+            detail="Couldn't turn the recording into text. Try again, or type your question.",
+        ) from error
+    log_stage("Spoken Question Transcribed", student_id=student_id, text=text)
+    return TranscriptionResponse(text=text)

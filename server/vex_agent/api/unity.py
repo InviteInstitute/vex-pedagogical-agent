@@ -17,7 +17,6 @@ auth / a gateway before exposing publicly.
 
 import json
 import logging
-import os
 import re
 from typing import Annotated
 
@@ -26,15 +25,12 @@ from fastapi.responses import Response
 
 from vex_agent.api.schemas import MessageRequest, StudentResponseRequest
 from vex_agent.api.students import create_message, create_response
-from vex_agent.llm.client import get_openai_client
+from vex_agent.llm.client import transcribe
 from vex_agent.services import tts as tts_service
 
 router = APIRouter(tags=["unity"])
 logger = logging.getLogger(__name__)
 
-# ponytail: the transcription model is a calibration knob; each LLM provider
-# exposes its own (e.g. granite-speech-4.1-2b-plus on NCSA Lumen).
-TRANSCRIBE_MODEL = os.getenv("TRANSCRIBE_MODEL", "gpt-4o-transcribe")
 # Replies are capped at 40 words by the LLM client; this only bounds abuse of the open endpoint.
 TTS_MAX_CHARS = 500
 _BACKTICKED = re.compile(r"`([^`]+)`")
@@ -104,11 +100,8 @@ def generate_feedback_from_voice(
     audiofile: Annotated[UploadFile, File()],
     audioFeedback: Annotated[bool, Form()] = False,
 ) -> dict:
-    transcript = get_openai_client().audio.transcriptions.create(
-        model=TRANSCRIBE_MODEL,
-        file=(audiofile.filename or "audio.wav", audiofile.file.read()),
-    )
-    return _feedback(request, student_id, transcript.text.strip(), audioFeedback)
+    text = transcribe(audiofile.filename or "audio.wav", audiofile.file.read())
+    return _feedback(request, student_id, text, audioFeedback)
 
 
 @router.get("/tts", name="tts")
