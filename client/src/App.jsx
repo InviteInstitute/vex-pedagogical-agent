@@ -1095,7 +1095,7 @@ function App() {
                 disabled={isAgentBusy}
               >
                 <Icon name="help" />
-                {pendingAction === "help" ? "Asking…" : "Help"}
+                <span className="help-label">{pendingAction === "help" ? "Asking…" : "Help"}</span>
               </button>
             ) : null}
             {studentId && isAvatarAvailable ? (
