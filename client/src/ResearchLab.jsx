@@ -1,5 +1,5 @@
-// The research preview's Agent tab: pick a model and edit the prompt template and
-// sampling for this browser's replies. Settings live in the parent (App.jsx), which
+// The research page: pick a model and edit the prompt template and sampling for this
+// browser's replies (asked by voice or typed in the chat). Settings live in the parent (App.jsx), which
 // sends them as overrides on /responses. Nothing here changes what the production
 // agent says. Every reply counts against this browser session's LLM token budget,
 // which the server enforces.
@@ -13,10 +13,11 @@ export const EMPTY_AGENT_SETTINGS = {
 };
 
 // The overrides payload for /responses, or null when every setting is at its
-// production default (so an untouched research view calls the agent exactly like
-// the student view does).
+// production default (so untouched settings call the agent exactly like students get).
 export function buildOverrides(settings, config) {
-  if (!config) {
+  // It runs in the chat too, so a missing or malformed config must mean "no
+  // overrides", never a crash.
+  if (!config?.defaults) {
     return null;
   }
   const overrides = {};
@@ -83,7 +84,7 @@ export default function ResearchLab({
   loadError,
   onRetry,
 }) {
-  if (!config) {
+  if (!config?.defaults) {
     return (
       <div className="lab">
         {loadError ? (

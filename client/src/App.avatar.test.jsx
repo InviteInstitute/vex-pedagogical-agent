@@ -35,7 +35,7 @@ afterEach(() => {
 });
 
 describe("avatar beside the chat", () => {
-  it("keeps the chat, adds a voice toggle, and marks the reply being spoken", async () => {
+  it("keeps the chat and adds a voice toggle, without a speaking indicator", async () => {
     const user = userEvent.setup();
     const { container } = render(<App />);
     await user.type(screen.getByLabelText("Student ID"), "mars-042");
@@ -46,6 +46,7 @@ describe("avatar beside the chat", () => {
     const frame = container.querySelector('iframe[title="INVITE Agent character"]');
     expect(frame).not.toBeNull();
 
+    // Speaking shows no indicator on the reply: the tutor's voice is the signal.
     act(() => {
       window.dispatchEvent(
         new MessageEvent("message", {
@@ -55,7 +56,7 @@ describe("avatar beside the chat", () => {
         }),
       );
     });
-    expect(container.querySelector(".turn.is-speaking .speaking")).not.toBeNull();
+    expect(container.querySelector(".speaking")).toBeNull();
 
     await user.click(voice);
     expect(screen.getByRole("button", { name: "Turn the tutor's voice on" })).toHaveAttribute(

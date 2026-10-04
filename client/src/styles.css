@@ -470,103 +470,17 @@ button:disabled {
   animation-delay: 0.3s;
 }
 
-/* Research-only telemetry, a quiet key/value table under the reply. */
-.research-details {
-  margin: 0.6rem 0 0;
-  padding-top: 0.5rem;
-  border-top: 1px dashed var(--line-strong);
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-}
+/* ---------- Research page: the agent settings ---------- */
 
-.research-details dl {
-  margin: 0;
-  display: grid;
-  gap: 0.15rem;
-}
-
-.turn-checkin .research-details {
-  border-top-color: var(--checkin-line);
-}
-
-.research-details div {
-  display: grid;
-  grid-template-columns: 3.4rem 1fr;
-  gap: 0.5rem;
-  align-items: baseline;
-}
-
-.research-details dt {
-  font-weight: 700;
-}
-
-.research-details dd {
-  margin: 0;
-  color: var(--ink);
-}
-
-.research-details code {
-  font-family: var(--font-mono);
-  font-size: 0.95em;
-}
-
-.prompt-sent {
-  margin-top: 0.35rem;
-}
-
-.prompt-sent summary {
-  width: fit-content;
-  cursor: pointer;
-  font-weight: 700;
-  color: var(--vex-blue-deep);
-}
-
-.prompt-sent pre {
-  max-height: 16rem;
-  overflow: auto;
-  margin: 0.4rem 0 0;
-  padding: 0.55rem 0.65rem;
-  border-radius: var(--radius-control);
-  background: var(--vex-blue-wash);
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.45;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  scrollbar-width: thin;
-}
-
-/* ---------- Research preview: tabs and the Agent tab ---------- */
-
-.research-tabs {
-  flex: none;
-  display: flex;
-  gap: 0.25rem;
-  padding: 0 0.75rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.research-tabs button {
-  height: 2.3rem;
-  padding: 0 0.6rem;
-  margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--ink-soft);
-}
-
-.research-tabs button:hover {
-  color: var(--ink);
-}
-
-.research-tabs button[aria-selected="true"] {
-  color: var(--ink);
-  border-bottom-color: var(--vex-blue);
-}
-
+/* Only the settings scroll; the footer with the way back to the chat stays put. */
 .research-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.research-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -1094,52 +1008,6 @@ button:disabled {
   color-scheme: normal;
 }
 
-/* The reply the character is saying: three level bars in the turn's left margin, so
-   the text never reflows when speech starts or stops. */
-.turn.is-speaking {
-  position: relative;
-}
-
-.speaking {
-  position: absolute;
-  top: 0.4em;
-  left: -12px;
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 0.8em;
-}
-
-.speaking span {
-  width: 2px;
-  height: 35%;
-  border-radius: 1px;
-  background: var(--vex-blue);
-  animation: speaking-level 900ms ease-in-out infinite;
-}
-
-.speaking span:nth-child(2) {
-  animation-delay: -300ms;
-}
-
-.speaking span:nth-child(3) {
-  animation-delay: -600ms;
-}
-
-.turn-checkin .speaking span {
-  background: var(--checkin-ink);
-}
-
-@keyframes speaking-level {
-  0%,
-  100% {
-    height: 35%;
-  }
-  50% {
-    height: 100%;
-  }
-}
-
 .chat-launcher {
   position: absolute;
   right: 24px;
@@ -1256,4 +1124,12 @@ button:disabled {
   .resize-grip {
     display: none;
   }
+}
+
+.research-foot {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem 0.6rem;
+  border-top: 1px solid var(--line);
 }
