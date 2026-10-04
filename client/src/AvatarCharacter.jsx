@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // The tutor as a character beside the chat panel: the Unity WebGL avatar
 // (webgl/index.html ?mode=avatar) renders only the 3D character, transparent over
@@ -55,6 +55,7 @@ export function placeAvatar(panel, viewport) {
 
 export default function AvatarCharacter({
   panelRef,
+  visible = true,
   layoutKey,
   utterance,
   muted,
@@ -69,7 +70,10 @@ export default function AvatarCharacter({
   // Follow the panel: on drag/resize (layoutKey), when its content changes size, and
   // when the window resizes. No panel (chat collapsed) hides the character in place:
   // shrinking the frame to nothing would hand Unity a zero-size screen.
-  useLayoutEffect(() => {
+  // Measured after the commit, not in a layout effect: this component renders before
+  // the panel, so a layout effect ran before a reopened panel's ref was attached,
+  // found no panel and left the tutor hidden.
+  useEffect(() => {
     const panel = panelRef.current;
     const measure = () => {
       const box = panelRef.current?.getBoundingClientRect();
@@ -138,7 +142,9 @@ export default function AvatarCharacter({
   const style = placement?.style;
   return (
     <div
-      className={`avatar-character ${isReady && style && !placement.hidden ? "is-shown" : ""}`}
+      className={`avatar-character ${
+        visible && isReady && style && !placement.hidden ? "is-shown" : ""
+      }`}
       aria-hidden="true"
       style={
         style

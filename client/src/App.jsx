@@ -1027,6 +1027,8 @@ function App() {
       {isAvatarAvailable ? (
         <AvatarCharacter
           panelRef={panelRef}
+          // Loads in the background from the start, but appears only once signed in.
+          visible={Boolean(studentId)}
           layoutKey={`${panelRect.x},${panelRect.y},${panelRect.width},${panelRect.height},${isChatOpen},${studentId}`}
           utterance={utterance}
           muted={isMuted}

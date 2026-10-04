@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import App from "./App.jsx";
@@ -79,5 +79,37 @@ describe("avatar beside the chat", () => {
     expect((await ask("why won't it turn?")).speak).toBe(true);
     await user.click(await screen.findByRole("button", { name: "Mute the tutor's voice" }));
     expect((await ask("and now?")).speak).toBe(false);
+  });
+
+  it("hides the tutor on the sign-in card, and brings it back after reopening the chat", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+    const tutor = () => container.querySelector(".avatar-character");
+    const frame = await waitFor(() => {
+      const element = container.querySelector('iframe[title="INVITE Agent character"]');
+      expect(element).not.toBeNull();
+      return element;
+    });
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: { type: "avatar-ready" },
+          origin: window.location.origin,
+          source: frame.contentWindow,
+        }),
+      );
+    });
+
+    // Ready, but not shown while the student enters their ID.
+    expect(tutor()).not.toHaveClass("is-shown");
+
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    await waitFor(() => expect(tutor()).toHaveClass("is-shown"));
+
+    await user.click(screen.getByRole("button", { name: "Collapse chat" }));
+    await waitFor(() => expect(tutor()).not.toHaveClass("is-shown"));
+    await user.click(screen.getByRole("button", { name: /Open chat/ }));
+    await waitFor(() => expect(tutor()).toHaveClass("is-shown"));
   });
 });
