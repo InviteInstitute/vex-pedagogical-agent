@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-// The tutor as a character attached to the chat panel: the Unity WebGL avatar
+// The tutor as a character beside the chat panel: the Unity WebGL avatar
 // (webgl/index.html ?mode=avatar) renders only the 3D character, transparent over
 // VEXcode VR, and says each reply with lip-sync and gestures. The chat itself stays in
 // the panel. Purely visual for assistive tech: everything it says is in the chat.
@@ -20,58 +20,41 @@ export async function isAvatarBuildAvailable(fetchImpl = fetch) {
   }
 }
 
-// The tutor rises from behind its chat: head to hips over the panel's top-left edge on
-// a desktop, standing on the header; head and shoulders on a phone (the panel spans the
-// screen) and over the "Open chat" button while the chat is closed. Only with no room
-// above the panel does it stand beside it instead, whole.
+// Beside the panel the whole character shows; on a phone the panel spans the screen,
+// so head and shoulders peek over its top edge instead.
 export const FULL_BODY = 1;
-export const UPPER_BODY = 0.55;
 export const HEAD_AND_SHOULDERS = 0.42;
 const PEEK_BREAKPOINT = 980;
 const EDGE = 8;
-// How much of the tutor's box sits behind the anchor's top edge (its cut line).
-const TUCK = 44;
-const MIN_RISE = 150;
 
-// Where the tutor stands for a given anchor box (the panel or the launcher).
-export function placeAvatar(anchor, viewport) {
-  if (anchor.height < 120) {
-    const width = 112;
-    const height = 140;
-    return {
-      framing: HEAD_AND_SHOULDERS,
-      style: { width, height, left: anchor.right - width - 8, top: anchor.top - height + 30 },
-    };
-  }
+// Where the character stands for a given panel box and viewport.
+export function placeAvatar(panel, viewport) {
   if (viewport.width <= PEEK_BREAKPOINT) {
     const width = 120;
     const height = 150;
     return {
       framing: HEAD_AND_SHOULDERS,
-      style: { width, height, left: anchor.right - width - 16, top: anchor.top - height + 30 },
+      style: {
+        width,
+        height,
+        left: panel.right - width - 16,
+        top: panel.top - height + 30, // the shoulders tuck behind the panel
+      },
     };
   }
-  const rise = Math.min(240, anchor.top - EDGE + TUCK);
-  if (rise >= MIN_RISE) {
-    const width = Math.round(rise * 0.84);
-    return {
-      framing: UPPER_BODY,
-      style: { width, height: rise, left: anchor.left + 14, top: anchor.top - rise + TUCK },
-    };
-  }
-  const height = Math.round(Math.min(460, Math.max(280, anchor.height * 0.72)));
+  const height = Math.round(Math.min(460, Math.max(280, panel.height * 0.72)));
   const width = Math.round(height * 0.44);
+  // Tuck a little behind the panel edge, so the character reads as standing at it.
   const tuck = Math.round(width * 0.12);
-  const leftOfPanel = anchor.left - width + tuck;
+  const top = panel.bottom - height;
+  const leftOfPanel = panel.left - width + tuck;
   const left =
-    leftOfPanel >= EDGE
-      ? leftOfPanel
-      : Math.min(anchor.right - tuck, viewport.width - width - EDGE);
-  return { framing: FULL_BODY, style: { width, height, left, top: anchor.bottom - height } };
+    leftOfPanel >= EDGE ? leftOfPanel : Math.min(panel.right - tuck, viewport.width - width - EDGE);
+  return { framing: FULL_BODY, style: { width, height, left, top } };
 }
 
 export default function AvatarCharacter({
-  anchorRef,
+  panelRef,
   layoutKey,
   utterance,
   muted,
@@ -83,16 +66,13 @@ export default function AvatarCharacter({
   const [isReady, setIsReady] = useState(false);
   const [placement, setPlacement] = useState(null);
 
-  // Follow the anchor (the panel, or the launcher while the chat is closed): on
-  // drag/resize and open/close (layoutKey), when its content changes size, and when
-  // the window resizes. Measured after the commit, so the anchor's ref is attached even
-  // when it renders after this component (reopening the chat used to find no panel
-  // and leave the tutor hidden). With no anchor the tutor hides in place: shrinking
-  // the frame to nothing would hand Unity a zero-size screen.
-  useEffect(() => {
-    const anchor = anchorRef.current;
+  // Follow the panel: on drag/resize (layoutKey), when its content changes size, and
+  // when the window resizes. No panel (chat collapsed) hides the character in place:
+  // shrinking the frame to nothing would hand Unity a zero-size screen.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
     const measure = () => {
-      const box = anchorRef.current?.getBoundingClientRect();
+      const box = panelRef.current?.getBoundingClientRect();
       setPlacement((previous) =>
         box
           ? placeAvatar(box, { width: window.innerWidth, height: window.innerHeight })
@@ -101,13 +81,13 @@ export default function AvatarCharacter({
     };
     measure();
     window.addEventListener("resize", measure);
-    const observer = anchor && "ResizeObserver" in window ? new ResizeObserver(measure) : null;
-    observer?.observe(anchor);
+    const observer = panel && "ResizeObserver" in window ? new ResizeObserver(measure) : null;
+    observer?.observe(panel);
     return () => {
       window.removeEventListener("resize", measure);
       observer?.disconnect();
     };
-  }, [anchorRef, layoutKey]);
+  }, [panelRef, layoutKey]);
 
   // The avatar page says "ready" once Unity has loaded, and reports speech start/stop.
   useEffect(() => {

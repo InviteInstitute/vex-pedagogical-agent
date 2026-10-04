@@ -24,12 +24,8 @@
   /* Two radii: containers (panel, turns, fields) and controls (buttons). A
      control inset 4px inside a field uses the field radius minus the gap. */
   --radius-container: 10px;
-  /* The panel: one hairline and a soft, offset shadow, so it sits on VEXcode VR
-     without a heavy frame. */
-  --radius-panel: 14px;
-  --hairline: rgba(16, 42, 72, 0.12);
   --radius-control: 6px;
-  --shadow-panel: 0 1px 2px rgba(16, 42, 72, 0.08), 0 18px 44px -18px rgba(16, 42, 72, 0.38);
+  --shadow-panel: 0 1px 2px rgba(16, 42, 72, 0.1), 0 20px 40px -16px rgba(16, 42, 72, 0.4);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
 
@@ -137,8 +133,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-panel);
+  border: 1px solid rgba(16, 42, 72, 0.18);
+  border-radius: var(--radius-container);
   box-shadow: var(--shadow-panel);
   overflow: hidden;
   animation: panel-in 240ms var(--ease-out);
@@ -152,50 +148,42 @@ button:disabled {
 }
 
 .panel-header {
-  min-height: 3.6rem;
+  height: 3rem;
   flex: none;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.55rem 0.5rem 1rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
+  gap: 0.4rem;
+  padding: 0 0.5rem 0 0.9rem;
+  background: var(--vex-blue);
+  color: #ffffff;
   cursor: move;
   user-select: none;
 }
 
 .panel-header :focus-visible {
-  outline-color: var(--vex-blue);
+  outline-color: #ffffff;
 }
 
 .panel-title {
   flex: 1;
   min-width: 0;
-  display: grid;
-  gap: 0.15rem;
-}
-
-.panel-name {
-  min-width: 0;
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: 0.6rem;
   white-space: nowrap;
 }
 
 .panel-title h1 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .panel-student {
   flex: none;
   max-width: 45%;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
+  font-size: 0.9rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -214,21 +202,18 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0 0.7rem 0 0.55rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  padding: 0 0.75rem 0 0.6rem;
+  border-radius: var(--radius-control);
   background: var(--surface);
-  color: var(--ink);
-  font-weight: 600;
-  font-size: 0.88rem;
+  color: var(--vex-blue-deep);
+  font-weight: 700;
+  font-size: 0.9rem;
   transition:
     background-color 140ms ease,
-    border-color 140ms ease,
     transform 140ms var(--ease-out);
 }
 
 .help-button:hover:not(:disabled) {
-  border-color: var(--sky);
   background: var(--vex-blue-wash);
 }
 
@@ -237,6 +222,7 @@ button:disabled {
 }
 
 .help-button:disabled {
+  background: rgba(251, 252, 254, 0.8);
   color: var(--ink-soft);
 }
 
@@ -246,11 +232,9 @@ button:disabled {
   flex: none;
   display: inline-grid;
   place-items: center;
-  border-radius: 999px;
-  color: var(--ink-soft);
-  transition:
-    background-color 140ms ease,
-    color 140ms ease;
+  border-radius: var(--radius-control);
+  color: #ffffff;
+  transition: background-color 140ms ease;
 }
 
 .panel-icon-button .icon {
@@ -259,8 +243,7 @@ button:disabled {
 }
 
 .panel-icon-button:hover {
-  background: var(--vex-blue-wash);
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 /* ---------- Start ---------- */
@@ -394,13 +377,14 @@ button:disabled {
 
 .turn-checkin {
   padding: 0.6rem 0.75rem 0.65rem;
+  border: 1px solid var(--checkin-line);
   border-radius: var(--radius-container);
   background: var(--checkin-wash);
 }
 
 .turn-label {
-  margin: 0 0 0.15rem;
-  font-size: 0.8rem;
+  margin: 0 0 0.2rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--checkin-ink);
 }
@@ -889,16 +873,17 @@ button:disabled {
 
 .composer {
   flex: none;
-  padding: 0.6rem 0.75rem 0.55rem;
+  padding: 0.65rem 0.75rem 0.6rem;
+  border-top: 1px solid var(--line);
 }
 
 .composer-field {
   display: flex;
   align-items: flex-end;
-  gap: 0.4rem;
-  padding: 4px 4px 4px 0.85rem;
+  gap: 0.5rem;
+  padding: 4px 4px 4px 0.75rem;
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-container);
   background: var(--surface);
   transition:
     border-color 140ms ease,
@@ -913,9 +898,9 @@ button:disabled {
 .composer-field textarea {
   flex: 1;
   min-width: 0;
-  min-height: 2.25rem;
+  min-height: 2.9rem;
   max-height: 9rem;
-  padding: 0.45rem 0;
+  padding: 0.35rem 0;
   border: 0;
   resize: none;
   field-sizing: content;
@@ -931,14 +916,16 @@ button:disabled {
 }
 
 .send-button {
-  width: 2.25rem;
-  height: 2.25rem;
+  height: 2.2rem;
   flex: none;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.8rem 0 0.6rem;
+  border-radius: var(--radius-control);
   background: var(--vex-blue);
   color: #ffffff;
+  font-weight: 700;
   transition:
     background-color 140ms ease,
     transform 140ms var(--ease-out);
@@ -953,28 +940,28 @@ button:disabled {
 }
 
 .send-button:disabled {
-  background: var(--line);
-  color: var(--ink-soft);
+  background: #a9cbef;
 }
 
 .composer-foot {
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 }
 
 .view-toggle {
   display: inline-flex;
-  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-control);
+  background: var(--vex-blue-wash);
 }
 
 .view-toggle button {
-  height: 1.4rem;
-  padding: 0 0.45rem;
-  border-radius: 999px;
-  font-size: 0.74rem;
-  font-weight: 600;
+  height: 1.45rem;
+  padding: 0 0.55rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
   color: var(--ink-soft);
   transition:
     background-color 140ms ease,
@@ -986,8 +973,9 @@ button:disabled {
 }
 
 .view-toggle button[aria-pressed="true"] {
-  background: var(--vex-blue-wash);
+  background: var(--surface);
   color: var(--ink);
+  box-shadow: 0 1px 2px rgba(16, 42, 72, 0.14);
 }
 
 .resize-grip {
@@ -1045,39 +1033,20 @@ button:disabled {
   color-scheme: normal;
 }
 
-/* What the tutor is doing, under where it stands: a dot when ready or thinking, level
-   bars while it speaks. */
-.panel-presence {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.78rem;
-  line-height: 1.2;
-  color: var(--ink-soft);
-}
-
-.presence-dot {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: var(--sky);
-}
-
-.panel-presence.is-thinking .presence-dot {
-  background: var(--checkin);
-  animation: thinking-pulse 1.1s infinite ease-in-out;
-}
-
-.panel-presence.is-speaking {
-  color: var(--vex-blue-deep);
+/* The reply the character is saying: three level bars in the turn's left margin, so
+   the text never reflows when speech starts or stops. */
+.turn.is-speaking {
+  position: relative;
 }
 
 .speaking {
+  position: absolute;
+  top: 0.4em;
+  left: -12px;
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  height: 0.75rem;
+  height: 0.8em;
 }
 
 .speaking span {
@@ -1094,6 +1063,10 @@ button:disabled {
 
 .speaking span:nth-child(3) {
   animation-delay: -600ms;
+}
+
+.turn-checkin .speaking span {
+  background: var(--checkin-ink);
 }
 
 @keyframes speaking-level {
@@ -1115,13 +1088,12 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0 1.05rem 0 0.9rem;
-  border: 1px solid var(--hairline);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
+  padding: 0 1rem 0 0.85rem;
+  border-radius: var(--radius-control);
+  background: var(--vex-blue);
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: var(--shadow-panel);
+  box-shadow: 0 10px 22px -10px rgba(16, 42, 72, 0.6);
   animation: panel-in 200ms var(--ease-out);
   transition:
     background-color 140ms ease,
@@ -1131,11 +1103,10 @@ button:disabled {
 .chat-launcher .icon {
   width: 1.2rem;
   height: 1.2rem;
-  color: var(--vex-blue);
 }
 
 .chat-launcher:hover {
-  background: var(--vex-blue-wash);
+  background: var(--vex-blue-deep);
 }
 
 .chat-launcher:active {
@@ -1147,8 +1118,8 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   margin-left: 0.15rem;
-  padding: 0 0.5rem;
-  border-radius: 999px;
+  padding: 0 0.45rem;
+  border-radius: 4px;
   background: var(--checkin);
   color: #3d2a00;
   font-size: 0.78rem;
