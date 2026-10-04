@@ -21,8 +21,17 @@ const box = (left, top, width, height) => ({
 
 describe("isAvatarBuildAvailable", () => {
   it("is true only when the WebGL build is deployed", async () => {
-    const fetchImpl = vi.fn((url) => Promise.resolve({ ok: url.startsWith(AVATAR_BUILD_PROBE) }));
+    const fetchImpl = vi.fn((url) =>
+      Promise.resolve({
+        ok: url.startsWith(AVATAR_BUILD_PROBE),
+        json: () => Promise.resolve({ version: "b44b9c21" }),
+      }),
+    );
     expect(await isAvatarBuildAvailable(fetchImpl)).toBe(true);
+    // A single-page app's index.html fallback, served for the missing build.json.
+    const spaFallback = () =>
+      Promise.resolve({ ok: true, json: () => Promise.reject(new SyntaxError("<!doctype")) });
+    expect(await isAvatarBuildAvailable(spaFallback)).toBe(false);
     expect(await isAvatarBuildAvailable(() => Promise.resolve({ ok: false }))).toBe(false);
     expect(await isAvatarBuildAvailable(() => Promise.reject(new Error("offline")))).toBe(false);
   });

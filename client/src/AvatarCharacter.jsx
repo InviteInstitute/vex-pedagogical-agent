@@ -14,7 +14,8 @@ export async function isAvatarBuildAvailable(fetchImpl = fetch) {
     const response = await fetchImpl(`${AVATAR_BUILD_PROBE}?t=${Date.now()}`, {
       cache: "no-store",
     });
-    return response.ok;
+    // A site without the build may answer any path with its own index.html (200).
+    return response.ok && Boolean(await response.json());
   } catch {
     return false;
   }
