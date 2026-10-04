@@ -115,6 +115,31 @@ describe("avatar beside the chat", () => {
     await waitFor(() => expect(tutor()).toHaveClass("is-shown"));
   });
 
+  it("says a reply once, however often the student switches views", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    const frame = container.querySelector('iframe[title="INVITE Agent character"]');
+    const postToTutor = vi.spyOn(frame.contentWindow, "postMessage");
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          data: { type: "avatar-ready" },
+          origin: window.location.origin,
+          source: frame.contentWindow,
+        }),
+      );
+    });
+    const spoken = () => postToTutor.mock.calls.filter(([message]) => message.type === "speak");
+    await waitFor(() => expect(spoken()).toHaveLength(1));
+
+    for (const view of ["Research", "Student", "Research", "Student"]) {
+      await user.click(screen.getByRole("button", { name: view }));
+    }
+    expect(spoken()).toHaveLength(1);
+  });
+
   it("sends a spoken question as what the tutor heard, and hushes it while recording", async () => {
     installFakeMic();
     const posted = [];

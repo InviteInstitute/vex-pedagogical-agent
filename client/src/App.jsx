@@ -293,7 +293,8 @@ function App() {
     : null;
   const utterance = latestReply?.body
     ? {
-        id: `${view}:${latestReply.id}`,
+        // Keyed by the message alone: switching views must not make it new again.
+        id: latestReply.id,
         messageId: latestReply.id,
         text: latestReply.body,
         // Spoken a sentence per clip (the server's split); the greeting is one clip.
