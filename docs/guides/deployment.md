@@ -101,6 +101,7 @@ server {
     }
 
     location /        { try_files $uri /index.html; }         # the SPA
+    location = /index.html { add_header Cache-Control "no-cache"; } # a reload picks up each deploy
 }
 ```
 
