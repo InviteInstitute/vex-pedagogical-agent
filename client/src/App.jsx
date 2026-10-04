@@ -127,6 +127,7 @@ export function renderMessageBody(text) {
 const VIEW_STORAGE_KEY = "vex-agent:view";
 const AGENT_SETTINGS_STORAGE_KEY = "vex-agent:agent-settings";
 const MUTED_STORAGE_KEY = "vex-agent:muted";
+const PRESENCE_LABELS = { ready: "Ready", thinking: "Thinking…", speaking: "Speaking" };
 
 function readStored(key, fallback) {
   try {
@@ -223,12 +224,17 @@ function getCursorForResizeHandle(handle) {
   return "";
 }
 
-// The panel opens in the bottom-right corner, clear of VEXcode VR's toolbar.
+// The panel opens in the bottom-right corner, clear of VEXcode VR's toolbar, leaving
+// room above it for the tutor to rise from behind its top edge.
 const PANEL_EDGE_GAP = 24;
+const TUTOR_HEADROOM = 200;
 
 function getDefaultPanelRect() {
   const width = 440;
-  const height = Math.max(PANEL_MIN_HEIGHT, Math.min(640, window.innerHeight - 2 * PANEL_EDGE_GAP));
+  const height = Math.max(
+    PANEL_MIN_HEIGHT,
+    Math.min(560, window.innerHeight - 2 * PANEL_EDGE_GAP - TUTOR_HEADROOM),
+  );
   return {
     x: Math.max(12, window.innerWidth - width - PANEL_EDGE_GAP),
     y: Math.max(12, window.innerHeight - height - PANEL_EDGE_GAP),
@@ -274,6 +280,7 @@ function App() {
   const [isMuted, setIsMuted] = useState(() => readStored(MUTED_STORAGE_KEY, false) === true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const panelRef = useRef(null);
+  const launcherRef = useRef(null);
   const interactionRef = useRef(null);
   const messageListRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -305,6 +312,11 @@ function App() {
       }
     : null;
   const speakingMessageId = isAvatarAvailable && isSpeaking ? utterance?.messageId : null;
+  const presence = speakingMessageId
+    ? "speaking"
+    : pendingAction === "help" || pendingAction === "message"
+      ? "thinking"
+      : "ready";
 
   useEffect(() => {
     isAvatarBuildAvailable().then(setIsAvatarAvailable);
@@ -1026,7 +1038,7 @@ function App() {
 
       {isAvatarAvailable ? (
         <AvatarCharacter
-          panelRef={panelRef}
+          anchorRef={isChatOpen ? panelRef : launcherRef}
           layoutKey={`${panelRect.x},${panelRect.y},${panelRect.width},${panelRect.height},${isChatOpen},${studentId}`}
           utterance={utterance}
           muted={isMuted}
@@ -1057,12 +1069,30 @@ function App() {
         >
           <header className="panel-header" onPointerDown={startDrag}>
             <div className="panel-title">
-              <h1>INVITE Agent</h1>
-              {studentId ? <span className="panel-student">{studentId}</span> : null}
-              {studentId && isResearchView ? (
-                <span className="panel-session" title={sessionId}>
-                  {sessionId}
-                </span>
+              <div className="panel-name">
+                <h1>INVITE Agent</h1>
+                {studentId ? <span className="panel-student">{studentId}</span> : null}
+                {studentId && isResearchView ? (
+                  <span className="panel-session" title={sessionId}>
+                    {sessionId}
+                  </span>
+                ) : null}
+              </div>
+              {/* What the tutor is doing, under where it stands. Visual only: the chat
+                  already announces thinking, and the speech is the reply's text. */}
+              {studentId ? (
+                <p className={`panel-presence is-${presence}`} aria-hidden="true">
+                  {presence === "speaking" ? (
+                    <span className="speaking">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  ) : (
+                    <span className="presence-dot" />
+                  )}
+                  {PRESENCE_LABELS[presence]}
+                </p>
               ) : null}
             </div>
             {studentId ? (
@@ -1211,13 +1241,6 @@ function App() {
                         ) : (
                           renderMessageBody(message.body)
                         )}
-                        {message.id === speakingMessageId ? (
-                          <span className="speaking" aria-hidden="true">
-                            <span />
-                            <span />
-                            <span />
-                          </span>
-                        ) : null}
                       </div>
                       {renderResearchDetails(message)}
                       {message.canFeedback ? renderFeedback(message) : null}
@@ -1251,15 +1274,16 @@ function App() {
                     onChange={(event) => setDraft(event.target.value)}
                     onKeyDown={handleComposerKeyDown}
                     maxLength={2000}
-                    placeholder="Ask about your program, your bug, or what to try next."
+                    placeholder="Ask about your code…"
                   />
                   <button
                     type="submit"
                     className="send-button"
                     disabled={pendingAction === "message" || !draft.trim()}
+                    aria-label={pendingAction === "message" ? "Sending…" : "Send"}
+                    title="Send"
                   >
                     <Icon name="send" />
-                    {pendingAction === "message" ? "Sending…" : "Send"}
                   </button>
                 </div>
                 <div className="composer-foot">
@@ -1285,7 +1309,12 @@ function App() {
           )}
         </section>
       ) : (
-        <button type="button" className="chat-launcher" onClick={() => setIsChatOpen(true)}>
+        <button
+          ref={launcherRef}
+          type="button"
+          className="chat-launcher"
+          onClick={() => setIsChatOpen(true)}
+        >
           <Icon name="chat" />
           Open chat
           {unseenReplies ? (

@@ -54,7 +54,8 @@ describe("avatar beside the chat", () => {
         }),
       );
     });
-    expect(container.querySelector(".turn.is-speaking .speaking")).not.toBeNull();
+    // The header's presence line says so, under where the tutor stands.
+    expect(container.querySelector(".panel-presence.is-speaking")).toHaveTextContent("Speaking");
 
     await user.click(voice);
     expect(screen.getByRole("button", { name: "Turn the tutor's voice on" })).toHaveAttribute(
