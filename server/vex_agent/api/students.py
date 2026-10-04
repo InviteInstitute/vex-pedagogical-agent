@@ -31,7 +31,7 @@ from vex_agent.domain.metrics import (
 )
 from vex_agent.domain.question_types import QUESTION_TYPE_SPECS
 from vex_agent.llm.client import DEFAULT_GENERATION_SETTINGS, GenerationSettings
-from vex_agent.services import budget
+from vex_agent.services import budget, tts
 from vex_agent.services.feedback import generate_feedback
 from vex_agent.services.logsync import sync_invite_hub_logs
 from vex_agent.services.sessions import RESEARCH_CHAT, append_session_message
@@ -356,6 +356,12 @@ def create_response(
         message=response_text,
     )
 
+    # The avatar will say this: split it into its spoken sentences and start
+    # synthesizing them now, while the reply travels to the browser.
+    speech = tts.speech_chunks(response_text) if payload.speak else None
+    if speech:
+        tts.prepare(speech)
+
     return StudentResponseResponse(
         response_id=str(response_id),
         session_id=resolved_session_id,
@@ -368,6 +374,7 @@ def create_response(
         llm_tokens=llm_tokens if llm_request else None,
         session_tokens=budget.session_usage(budget_key),
         question_type=question_type,
+        speech=speech,
         status="received",
     )
 

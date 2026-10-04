@@ -37,3 +37,7 @@ def _daemon_off_unless_set(monkeypatch):
     import vex_agent.app
 
     monkeypatch.setattr(vex_agent.app, "warm_up_tts", lambda: None)
+    # Speech jobs are cached per process; start every test empty.
+    from vex_agent.services import tts
+
+    tts.clear_cache()

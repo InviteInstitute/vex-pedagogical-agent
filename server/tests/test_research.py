@@ -178,3 +178,31 @@ def test_execute_prompt_passes_temperature_only_when_set(monkeypatch):
     ls.execute_prompt(model="m", prompt="p", temperature=0.7)
     assert "temperature" not in seen[0]
     assert seen[1]["temperature"] == 0.7
+
+
+def test_speak_returns_the_spoken_sentences_and_starts_them(api, monkeypatch):
+    """A client with the avatar on asks for speech: the reply comes back with its
+    sentences (spoken form), already queued for synthesis."""
+    from uuid import uuid4
+
+    from vex_agent.api import students
+    from vex_agent.services import tts
+
+    _budget(monkeypatch)
+    monkeypatch.setattr(students, "sync_invite_hub_logs", lambda **k: 0)
+    monkeypatch.setattr(students, "insert_message", lambda **k: None)
+    monkeypatch.setattr(students, "append_session_message", lambda **k: None)
+    prepared = []
+    monkeypatch.setattr(tts, "prepare", prepared.extend)
+
+    body = api.post(
+        "/v1/students/s1/responses",
+        json={
+            "session_id": str(uuid4()),
+            "response_text": "Nice start! Look at your `drive [forward/reverse]` block.",
+            "speak": True,
+        },
+    ).json()
+
+    assert body["speech"] == ["Nice start!", "Look at your drive block."]
+    assert prepared == body["speech"]

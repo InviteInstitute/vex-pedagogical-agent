@@ -25,6 +25,8 @@ def test_format_sse_event_frame():
     assert data["message_id"] == 5
     assert data["message"] == "You're close!"
     assert data["origin"] == "proactive"
+    # the avatar says check-ins a sentence per clip, like replies
+    assert data["speech"] == ["You're close!"]
 
 
 @pytest.mark.skipif(not os.getenv("DATABASE_URL"), reason="needs a live DATABASE_URL")

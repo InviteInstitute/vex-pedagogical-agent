@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 TRANSCRIBE_MODEL = os.getenv("TRANSCRIBE_MODEL", "gpt-4o-transcribe")
 # Replies are capped at 40 words by the LLM client; this only bounds abuse of the open endpoint.
 TTS_MAX_CHARS = 500
-_BLOCK_PLACEHOLDER = re.compile(r"\s*\[[^\]]*\]")
 _BACKTICKED = re.compile(r"`([^`]+)`")
 
 
@@ -45,12 +44,6 @@ def display_text(text: str) -> str:
     """Replies wrap block names in backticks (the React client renders them as
     chips); the Unity bubble is TextMeshPro rich text, so bold them instead."""
     return _BACKTICKED.sub(r"<b>\1</b>", text)
-
-
-def spoken_text(text: str) -> str:
-    """What the avatar should say: replies name blocks as `drive [forward/reverse]
-    for [number] [mm/inches]`; speech drops the backticks and the [placeholders]."""
-    return _BLOCK_PLACEHOLDER.sub("", text).replace("`", "")
 
 
 def latest_student_text(conversation_input: str) -> str:
@@ -125,7 +118,7 @@ def tts(text: Annotated[str, Query(min_length=1, max_length=TTS_MAX_CHARS)]) -> 
     a clip only once fully downloaded, and a failure surfaces as a 500, not a
     truncated clip."""
     try:
-        audio = tts_service.synthesize(spoken_text(text))
+        audio = tts_service.audio_for(tts_service.spoken_text(text))
     except Exception as error:
         logger.exception("TTS generation failed")
         raise HTTPException(status_code=500, detail=f"TTS generation failed: {error}") from error

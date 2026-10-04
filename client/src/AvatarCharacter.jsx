@@ -132,7 +132,7 @@ export default function AvatarCharacter({
       return;
     }
     spokenIds.current.add(utterance.id);
-    post({ type: "speak", text: utterance.text, audio: !muted });
+    post({ type: "speak", text: utterance.text, parts: utterance.parts, audio: !muted });
   }, [isReady, utterance, muted]);
 
   const style = placement?.style;

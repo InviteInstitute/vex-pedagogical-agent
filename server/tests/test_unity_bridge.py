@@ -139,15 +139,6 @@ def test_tts_failure_is_500_and_text_is_bounded(monkeypatch):
     assert client.get("/tts", params={"text": "x" * 501}).status_code == 422
 
 
-def test_spoken_text_drops_block_markup():
-    assert (
-        unity.spoken_text(
-            "Connect `drive [forward/reverse] for [number] [mm/inches]` under `when started`."
-        )
-        == "Connect drive for under when started."
-    )
-
-
 def test_display_text_bolds_block_names_for_unity():
     assert (
         unity.display_text("Use `turn [right/left]` next.") == "Use <b>turn [right/left]</b> next."

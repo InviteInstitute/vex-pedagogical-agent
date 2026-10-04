@@ -106,6 +106,8 @@ public class ChatLLM : MonoBehaviour
         beatGestureNames.Add("keepGoing");
         beatGestureNames.Add("leanInHandOut");
         beatGestureNames.Add("scratchHead");
+        // Now Speak can run: tell the page (it waits for this before saying "ready").
+        AvatarStarted();
     }
 
     private void LoadAnimationClips()
@@ -384,9 +386,11 @@ public class ChatLLM : MonoBehaviour
     private IEnumerator PlayAnimation()
     {
         Random rnd = new Random();
-        if (audioFeedback && voice.isPlaying)
+        // Keep gesturing for the whole reply: a sentence-by-sentence reply (Speak) has
+        // short gaps between clips where voice.isPlaying is false.
+        if (speechActive || (audioFeedback && voice.isPlaying))
         {
-            while (voice.isPlaying)
+            while (speechActive || voice.isPlaying)
             {
                 int waitTime = rnd.Next(3, 8);
                 int gestureNum = rnd.Next(0, 4);
@@ -421,14 +425,20 @@ public class ChatLLM : MonoBehaviour
             Debug.LogError("Error parsing speech JSON from JS: " + e.Message);
             return;
         }
-        if (line == null)
+        // Before Start there is no voice yet; touching it would be a null access, which
+        // a WebGL build doesn't survive (the avatar went silent for the whole visit).
+        if (line == null || voice == null || animator == null)
         {
             return;
         }
+        speechToken++;
         voice.Stop();
-        if (!string.IsNullOrEmpty(line.audio))
+        string[] clips = line.audios != null && line.audios.Length > 0
+            ? line.audios
+            : !string.IsNullOrEmpty(line.audio) ? new[] { line.audio } : new string[0];
+        if (clips.Length > 0)
         {
-            StartCoroutine(PlayProactiveAudio(line.audio));
+            StartCoroutine(PlaySpeech(clips, speechToken));
         }
         else
         {
@@ -436,10 +446,72 @@ public class ChatLLM : MonoBehaviour
         }
     }
 
+    private int speechToken = 0;
+    private bool speechActive = false;
+
+    // Play a reply's clips in order (one per sentence), fetching the next while the
+    // current one plays, so speech starts as soon as the first sentence is ready. A
+    // newer Speak or Hush ends it.
+    private IEnumerator PlaySpeech(string[] urls, int token)
+    {
+        speechActive = true;
+        UnityWebRequest next = UnityWebRequestMultimedia.GetAudioClip(urls[0], AudioType.WAV);
+        next.SendWebRequest();
+        for (int i = 0; i < urls.Length; i++)
+        {
+            UnityWebRequest current = next;
+            while (!current.isDone)
+            {
+                yield return null;
+            }
+            next = i + 1 < urls.Length ? UnityWebRequestMultimedia.GetAudioClip(urls[i + 1], AudioType.WAV) : null;
+            if (next != null)
+            {
+                next.SendWebRequest();
+            }
+            if (token != speechToken)
+            {
+                current.Dispose();
+                if (next != null)
+                {
+                    next.Dispose();
+                }
+                yield break;
+            }
+            if (current.result == UnityWebRequest.Result.Success)
+            {
+                voice.clip = DownloadHandlerAudioClip.GetContent(current);
+                voice.Play();
+                if (i == 0)
+                {
+                    StartCoroutine(PlayAnimation());
+                }
+                while (voice.isPlaying && token == speechToken)
+                {
+                    yield return null;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Speech clip download failed: " + current.error);
+            }
+            current.Dispose();
+        }
+        if (token == speechToken)
+        {
+            speechActive = false;
+        }
+    }
+
     // Stop talking now (the student muted the voice mid-sentence).
     public void Hush()
     {
-        voice.Stop();
+        speechToken++;
+        speechActive = false;
+        if (voice != null)
+        {
+            voice.Stop();
+        }
     }
 
     // How much of the character the camera shows, from the head down: 1 is head to
@@ -461,8 +533,11 @@ public class ChatLLM : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern void AvatarSpeakingChanged(int speaking);
+    [DllImport("__Internal")]
+    private static extern void AvatarStarted();
 #else
     private static void AvatarSpeakingChanged(int speaking) { }
+    private static void AvatarStarted() { }
 #endif
 
     private bool wasSpeaking = false;
@@ -471,7 +546,7 @@ public class ChatLLM : MonoBehaviour
     // which reply is being spoken.
     private void Update()
     {
-        bool speaking = voice != null && voice.isPlaying;
+        bool speaking = speechActive || (voice != null && voice.isPlaying);
         if (speaking != wasSpeaking)
         {
             wasSpeaking = speaking;
@@ -501,6 +576,11 @@ public class ChatLLM : MonoBehaviour
             ChatWindow.Instance.AddMessageToCurrentConversation("ai", message.text, false);
         }
 
+        // Before Start there is no voice or animator yet (see Speak).
+        if (voice == null || animator == null)
+        {
+            return;
+        }
         if (audioFeedback && !string.IsNullOrEmpty(message.audio))
         {
             StartCoroutine(PlayProactiveAudio(message.audio));
@@ -533,6 +613,7 @@ public class ChatLLM : MonoBehaviour
     {
         public string text;
         public string audio;
+        public string[] audios;
     }
 
     [System.Serializable]

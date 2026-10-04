@@ -296,7 +296,13 @@ function App() {
         .find((message) => message.role === "assistant" && !message.isLoading && !message.error)
     : null;
   const utterance = latestReply?.body
-    ? { id: `${view}:${latestReply.id}`, messageId: latestReply.id, text: latestReply.body }
+    ? {
+        id: `${view}:${latestReply.id}`,
+        messageId: latestReply.id,
+        text: latestReply.body,
+        // Spoken a sentence per clip (the server's split); the greeting is one clip.
+        parts: latestReply.speech?.length ? latestReply.speech : [latestReply.body],
+      }
     : null;
   const speakingMessageId = isAvatarAvailable && isSpeaking ? utterance?.messageId : null;
 
@@ -357,6 +363,7 @@ function App() {
         id: proactiveId,
         role: "assistant",
         body: payload.message,
+        speech: payload.speech || null,
         proactive: true,
         canFeedback: false,
         trigger: payload.trigger_type,
@@ -788,6 +795,8 @@ function App() {
         session_id: messageResponse.session_id,
         student_message: studentMessage,
         chat,
+        // The character will say it: the server starts the speech while it replies.
+        speak: isAvatarAvailable && !isMuted,
         ...(agentOverrides ? { overrides: agentOverrides } : {}),
       });
       setSessionId(responseRecord.session_id);
@@ -803,6 +812,7 @@ function App() {
                   id: responseRecord.response_id,
                   role: "assistant",
                   body: responseRecord.response_text,
+                  speech: responseRecord.speech || null,
                   model: responseRecord.llm_model || null,
                   prompt: responseRecord.llm_prompt || null,
                   tokens: responseRecord.llm_tokens ?? null,

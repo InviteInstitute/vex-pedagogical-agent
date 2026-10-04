@@ -63,4 +63,21 @@ describe("avatar beside the chat", () => {
     );
     expect(JSON.parse(window.localStorage.getItem("vex-agent:muted"))).toBe(true);
   });
+
+  it("asks the server to prepare speech only while the voice is on", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.type(screen.getByLabelText("Student ID"), "mars-042");
+    await user.click(screen.getByRole("button", { name: "Start chat" }));
+    const ask = async (text) => {
+      await user.type(await screen.findByLabelText("Message"), text);
+      await user.click(screen.getByRole("button", { name: /Send/ }));
+      const calls = fetch.mock.calls.filter(([url]) => String(url).endsWith("/responses"));
+      return JSON.parse(calls.at(-1)[1].body);
+    };
+
+    expect((await ask("why won't it turn?")).speak).toBe(true);
+    await user.click(await screen.findByRole("button", { name: "Mute the tutor's voice" }));
+    expect((await ask("and now?")).speak).toBe(false);
+  });
 });

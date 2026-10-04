@@ -54,15 +54,30 @@
       if (event.origin !== location.origin || event.source !== window.parent || !unity) return;
       const data = event.data || {};
       if (data.type === "proactive" && data.text) deliver(data.text);
-      // Avatar-only: say a reply (audio off -> gesture only, e.g. when muted).
+      // Avatar-only: say a reply, one clip per sentence in `parts` (the server's split,
+      // so the first sentence plays while the rest are prepared). Audio off -> gesture only.
       if (data.type === "speak" && data.text) {
-        const audio = data.audio === false ? "" : speechUrl(data.text);
-        unity.SendMessage(CHATLLM_OBJECT, "Speak", JSON.stringify({ text: data.text, audio }));
+        const parts = Array.isArray(data.parts) && data.parts.length ? data.parts : [data.text];
+        const audios = data.audio === false ? [] : parts.map(speechUrl);
+        unity.SendMessage(CHATLLM_OBJECT, "Speak", JSON.stringify({ text: data.text, audios }));
       }
       if (data.type === "hush") unity.SendMessage(CHATLLM_OBJECT, "Hush");
       if (data.type === "framing" && data.framing) {
         unity.SendMessage(CHATLLM_OBJECT, "SetFraming", String(data.framing));
       }
+    });
+    // Tell the embedding client "ready" only once the engine has loaded AND ChatLLM has
+    // started (AvatarEvents.jslib): a message in between hit uninitialized audio and
+    // crashed the avatar for the rest of the visit.
+    let unityStarted = false;
+    const announceReady = () => {
+      if (embedded && unity && unityStarted) {
+        window.parent.postMessage({ type: "avatar-ready" }, location.origin);
+      }
+    };
+    window.addEventListener("avatar-started", () => {
+      unityStarted = true;
+      announceReady();
     });
     // Unity -> client: speech started/stopped (AvatarEvents.jslib).
     window.addEventListener("avatar-speaking", (event) => {
@@ -108,7 +123,7 @@
           };
           unityInstance.SendMessage(CHATLLM_OBJECT, "ReceiveConfigJson", JSON.stringify(cfg));
           unity = unityInstance;
-          if (embedded) window.parent.postMessage({ type: "avatar-ready" }, location.origin);
+          announceReady();
         }).catch((e) => { msg.textContent = "Unity load failed: " + e; });
       };
       script.onerror = missing;

@@ -18,6 +18,7 @@ from vex_agent.data.db import (
     latest_proactive_message_id,
     proactive_rev,
 )
+from vex_agent.services import tts
 
 router = APIRouter(prefix="/v1", tags=["stream"])
 
@@ -34,6 +35,8 @@ def format_sse_event(message: dict) -> str:
         "origin": "proactive",
         "trigger_type": message.get("trigger_type"),
         "trigger_why": message.get("trigger_why"),
+        # Sentences for the avatar to say one /tts clip at a time (services/tts).
+        "speech": tts.speech_chunks(message["message_text"]),
     }
     return f"event: assistant_message\ndata: {json.dumps(payload)}\n\n"
 

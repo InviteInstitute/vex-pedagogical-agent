@@ -87,6 +87,10 @@ class StudentResponseRequest(BaseModel):
         default="student",
         description="Which chat the reply belongs to. Overrides always mean the research chat.",
     )
+    speak: bool = Field(
+        default=False,
+        description="The client's avatar will say this reply: start synthesizing its speech now.",
+    )
 
 
 class StudentResponseResponse(BaseModel):
@@ -101,6 +105,10 @@ class StudentResponseResponse(BaseModel):
     llm_tokens: int | None = Field(default=None, description="Tokens this reply's LLM calls spent.")
     session_tokens: "TokenUsage | None" = None
     question_type: str | None = None
+    speech: list[str] | None = Field(
+        default=None,
+        description="With speak: the reply as the avatar says it, a sentence per /tts clip.",
+    )
     status: Literal["received"]
 
 
