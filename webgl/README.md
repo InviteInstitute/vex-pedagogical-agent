@@ -7,13 +7,13 @@ the avatar talks to the telemetry-grounded `vex_agent` backend.
 
 The Unity project is `../unity/` (Editor **2022.3.40f1**). Build it either way:
 
-- Headless:
+- Headless (output in `../unity/Builds/WebGL/`):
   ```bash
-  Unity -batchmode -nographics -quit -projectPath ../unity \
+  Unity -batchmode -nographics -quit -projectPath ../unity -buildTarget WebGL \
         -executeMethod BuildScript.BuildWebGL -logFile -
   ```
 - Editor: open `../unity/` in Unity Hub, then **File ▸ Build Settings ▸ WebGL ▸ Build**
-  into `webgl/build_out/ai-conversation-agent/`.
+  into any folder.
 
 Either way, install the output with `./install_build.sh <build-dir>` (any build name;
 it copies and renames the files into place). This must then exist (git-ignored):
@@ -22,8 +22,6 @@ it copies and renames the files into place). This must then exist (git-ignored):
 webgl/build_out/ai-conversation-agent/Build/ai-conversation-agent.loader.js
 webgl/build_out/ai-conversation-agent/StreamingAssets/
 ```
-
-If your build name differs, set `BUILD_NAME` at the top of `index.html`.
 
 ## Run the MVP demo
 

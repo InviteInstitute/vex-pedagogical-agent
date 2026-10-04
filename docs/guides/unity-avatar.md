@@ -44,12 +44,13 @@ precision model: the int8 one was about 6x slower on CPUs without VNNI.
 Open `unity/` with Unity **2022.3.40f1**, or build headlessly:
 
 ```bash
-Unity -batchmode -nographics -quit -projectPath unity \
+Unity -batchmode -nographics -quit -projectPath unity -buildTarget WebGL \
       -executeMethod BuildScript.BuildWebGL -logFile -
 ```
 
-The build lands in `webgl/build_out/ai-conversation-agent/` (git-ignored), where
-`webgl/index.html` loads it.
+The build lands in `unity/Builds/WebGL/` (git-ignored, Brotli with decompression
+fallback). Install it where `webgl/index.html` loads it with
+`webgl/install_build.sh unity/Builds/WebGL`.
 
 ## On The Site
 

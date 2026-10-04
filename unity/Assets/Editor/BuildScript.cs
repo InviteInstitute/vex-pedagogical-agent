@@ -4,26 +4,30 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 // Headless WebGL build for CI / batchmode:
-//   Unity -batchmode -nographics -quit -projectPath <proj> \
+//   Unity -batchmode -nographics -quit -projectPath <proj> -buildTarget WebGL \
 //         -executeMethod BuildScript.BuildWebGL -logFile -
-// Outputs to <repo>/webgl/build_out/ai-conversation-agent/ ; the Build/ subfolder
-// there is what the embed page (webgl/index.html) loads.
+// -buildTarget WebGL matters: opened for another target, the editor compiles scripts
+// without UNITY_WEBGL and the build fails with "script class layout is incompatible"
+// (uLipSync has WebGL-only fields); switching target inside this method is too late.
+// Outputs to <proj>/Builds/WebGL/ (git-ignored). Install it where the avatar page
+// loads it with webgl/install_build.sh unity/Builds/WebGL, the same step as a build
+// made from File > Build Settings.
 public static class BuildScript
 {
     static readonly string[] Scenes = { "Assets/Scenes/QuestionScene.unity" };
-    const string BuildLeafName = "ai-conversation-agent"; // must match BUILD_NAME in webgl/index.html
 
     public static void BuildWebGL()
     {
-        // Serve-anywhere: no compression so a plain static server (python -m http.server) works.
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+        // Brotli with decompression fallback: about 17MB for students instead of ~40MB
+        // uncompressed, and a plain static server (nginx, python -m http.server) can
+        // serve it because the loader decompresses in the browser.
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Brotli;
         PlayerSettings.WebGL.decompressionFallback = true;
 
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
 
         string projectDir = Directory.GetParent(Application.dataPath).FullName;         // .../unity
-        string repoDir = Directory.GetParent(projectDir).FullName;                      // .../vex-pedagogical-agent
-        string outDir = Path.Combine(repoDir, "webgl", "build_out", BuildLeafName);
+        string outDir = Path.Combine(projectDir, "Builds", "WebGL");
 
         BuildReport report = BuildPipeline.BuildPlayer(
             Scenes, outDir, BuildTarget.WebGL, BuildOptions.None);

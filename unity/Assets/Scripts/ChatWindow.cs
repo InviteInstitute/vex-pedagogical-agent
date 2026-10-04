@@ -209,8 +209,13 @@ public class ChatWindow : MonoBehaviour
             }
         }
 
-        // Start with a clean conversation
-        StartNewConversation();
+        // Start with a clean conversation, unless a message already opened one (a
+        // proactive check-in relayed by the page can arrive before Start runs; a second
+        // conversation here would hide it in the sidebar)
+        if (activeConversation == null)
+        {
+            StartNewConversation();
+        }
     }
 
     private void Update()
@@ -502,6 +507,8 @@ public class ChatWindow : MonoBehaviour
             return;
         }
         isCompact = true;
+        // In a 440px frame a 320px sidebar would squeeze the chat to a sliver when opened.
+        sidebarWidth = 220f;
 
         // The interface is a world-space board sized for a wide screen; in a tall corner
         // frame it runs off both sides. Draw it in screen space at the same depth, scaled
