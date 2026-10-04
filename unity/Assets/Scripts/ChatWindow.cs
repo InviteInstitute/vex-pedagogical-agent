@@ -302,16 +302,21 @@ public class ChatWindow : MonoBehaviour
         }
         foundHeadBone = (headBoneTransform != null);
 
-        // Calculate screen shift for half of the sidebar width (320f / 2f = 160f pixels)
-        float shiftPixels = sidebarWidth / 2f;
+        agentShiftVector = ComputeAgentShift();
+        agentPositionInitialized = true;
+    }
 
+    // The world-space move the avatar makes as the sidebar collapses. Wide layout: half
+    // the sidebar width on screen (320f / 2f = 160f pixels), keeping it under the chat.
+    // Compact: whatever lands it in the middle of the frame.
+    private Vector3 ComputeAgentShift()
+    {
         // Project initial position to screen, subtract horizontal pixel shift, and project back to world space
         Vector3 screenPos = Camera.main.WorldToScreenPoint(agentInitialPosition);
+        float shiftPixels = isCompact ? screenPos.x - Screen.width * 0.5f : sidebarWidth / 2f;
         Vector3 shiftedScreenPos = screenPos - new Vector3(shiftPixels, 0f, 0f);
         Vector3 shiftedWorldPos = Camera.main.ScreenToWorldPoint(shiftedScreenPos);
-
-        agentShiftVector = shiftedWorldPos - agentInitialPosition;
-        agentPositionInitialized = true;
+        return shiftedWorldPos - agentInitialPosition;
     }
 
     private Transform FindHeadBone(Transform parent)
@@ -497,6 +502,35 @@ public class ChatWindow : MonoBehaviour
             return;
         }
         isCompact = true;
+
+        // The interface is a world-space board sized for a wide screen; in a tall corner
+        // frame it runs off both sides. Draw it in screen space at the same depth, scaled
+        // so one UI unit is one pixel of a 440px-wide frame (the 800px reference would
+        // shrink 16px text to ~9px there).
+        Canvas canvas = mainCanvas != null ? mainCanvas : GetComponent<Canvas>();
+        Camera cam = Camera.main;
+        if (canvas != null && cam != null && canvas.renderMode == RenderMode.WorldSpace)
+        {
+            float depth = Vector3.Dot(canvas.transform.position - cam.transform.position, cam.transform.forward);
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = depth > cam.nearClipPlane ? depth : canvas.planeDistance;
+        }
+        CanvasScaler scaler = canvas != null ? canvas.GetComponent<CanvasScaler>() : null;
+        if (scaler != null)
+        {
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(440f, 720f);
+            scaler.matchWidthOrHeight = 0f;
+        }
+
+        // Re-aim the avatar's collapse move at the frame's centre (if it was already
+        // measured; otherwise InitializeAgentOffsets will use isCompact).
+        if (agentPositionInitialized && cam != null)
+        {
+            agentShiftVector = ComputeAgentShift();
+        }
+
         if (sidebarExpanded)
         {
             ToggleSidebar();
