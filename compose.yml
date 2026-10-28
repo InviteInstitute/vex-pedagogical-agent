@@ -2,14 +2,17 @@ name: vex-pedagogical-agent
 
 services:
   db:
-    image: postgres:latest
+    # Pinned to a major version: a newer major cannot open this one's data folder.
+    image: postgres:18
     restart: unless-stopped
     environment:
       POSTGRES_USER: vexagent
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: vexagent
     volumes:
-      - pgdata:/var/lib/postgresql
+      # The pgdata volume by default. The prod server sets DB_DATA to a folder on its data
+      # disk (/data/vex-pedagogical-agent/postgres), so the database outlives the root disk.
+      - ${DB_DATA:-pgdata}:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vexagent -d vexagent"]
       interval: 5s

@@ -18,6 +18,7 @@ cp .env.example .env
 |---|---|---|---|
 | `POSTGRES_PASSWORD` | `.env` (compose) | (none) | password for the `db` service, compose refuses to start without it |
 | `API_PORT` / `DB_PORT` | `.env` (compose) | `8001` / `5433` | host ports (on `127.0.0.1`) compose publishes the API and Postgres on. Change them to run a second stack beside another on one server; `scripts/deploy.sh` health-checks `API_PORT` |
+| `DB_DATA` | `.env` (compose) | `pgdata` (a compose volume) | where Postgres keeps its files. Prod sets `/data/vex-pedagogical-agent/postgres`, on the server's data disk. Copy the data there with the database stopped before setting it, or Postgres starts with an empty database |
 | `DATABASE_URL` | app | (none) | Postgres connection string. Under compose the API reaches `db` on the compose network. For a venv run point it at the published port `5433` |
 | `OPENAI_API_KEY` | app | (none) | key for the LLM gateway. For a local Ollama any non-empty value works (e.g. `ollama`) |
 | `OPENAI_BASE_URL` | app | (none) | base URL of the OpenAI-compatible endpoint. UIUC Servers in prod, or `http://localhost:11434/v1` for Ollama |
