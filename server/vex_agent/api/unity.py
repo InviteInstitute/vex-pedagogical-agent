@@ -106,7 +106,7 @@ def generate_feedback_from_voice(
 
 @router.get("/tts", name="tts")
 def tts(text: Annotated[str, Query(min_length=1, max_length=TTS_MAX_CHARS)]) -> Response:
-    """WAV speech for one reply, synthesized locally by Kokoro. Unity loads it with
+    """WAV speech for one reply, synthesized locally by Paradee. Unity loads it with
     AudioType.WAV and lip-syncs to it. Whole-clip rather than streamed: Unity plays
     a clip only once fully downloaded, and a failure surfaces as a 500, not a
     truncated clip."""

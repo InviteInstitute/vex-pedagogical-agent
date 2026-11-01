@@ -53,7 +53,7 @@ unity/*.sln
 # Unity WebGL build output (BuildScript.BuildWebGL)
 webgl/build_out/
 
-# Local Kokoro TTS model files (scripts/fetch_kokoro.py)
+# Local TTS model files (scripts/fetch_tts_model.py)
 server/models/
 
 # Client build swap folders (deploys build into dist.next, keep dist.prev to roll back)

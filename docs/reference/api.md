@@ -288,6 +288,6 @@ transcribed with `TRANSCRIBE_MODEL` on the LLM gateway, then answered as above.
 ### GET /tts
 
 `?text=` (1 to 500 characters). Returns `audio/wav` (16-bit mono) synthesized locally by
-Kokoro, with backticks and `[placeholders]` dropped so block names read naturally.
+Paradee, with backticks and `[placeholders]` dropped so block names read naturally.
 `500` if synthesis fails (for example, the model was never fetched).
 

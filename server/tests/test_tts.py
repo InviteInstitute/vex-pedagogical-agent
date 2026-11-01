@@ -1,6 +1,6 @@
-"""Local Kokoro TTS: the WAV container Unity decodes, the spoken sentences and the
+"""Local Paradee TTS: the WAV container Unity decodes, the spoken sentences and the
 cached synthesis jobs, plus one real synthesis when the model is downloaded
-(scripts/fetch_kokoro.py)."""
+(scripts/fetch_tts_model.py)."""
 
 import io
 import os
@@ -21,11 +21,21 @@ def test_to_wav_writes_a_complete_header():
     assert pcm.tolist() == [0, 16383, -16383, 32767]
 
 
-@pytest.mark.skipif(not os.path.exists(tts.KOKORO_MODEL), reason="Kokoro model not downloaded")
+@pytest.mark.skipif(not os.path.exists(tts.PARADEE_MODEL), reason="Paradee model not downloaded")
 def test_real_synthesis_produces_speech_length_audio():
     with wave.open(io.BytesIO(tts.synthesize("Which block moves the arm?"))) as wav:
         seconds = wav.getnframes() / wav.getframerate()
     assert 0.8 < seconds < 5
+
+
+def test_trim_silence_keeps_a_short_pause_around_speech():
+    sr = 1000
+    speech = np.full(500, 0.3, dtype=np.float32)
+    clip = np.concatenate([np.zeros(300), speech, np.zeros(500)]).astype(np.float32)
+    trimmed = tts.trim_silence(clip, sr)
+    assert len(trimmed) == 50 + 500 + 120  # _KEEP_BEFORE / _KEEP_AFTER at 1 kHz
+    assert np.abs(trimmed[:50]).max() == 0 and trimmed[50] == 0.3
+    assert tts.trim_silence(np.zeros(10, dtype=np.float32), sr).size == 10  # all silent: untouched
 
 
 def test_spoken_text_drops_block_markup():

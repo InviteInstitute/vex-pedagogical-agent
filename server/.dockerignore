@@ -26,8 +26,8 @@
 .env
 .env.*
 
-# Local dev state: the test Postgres cluster, its run dir, and the Kokoro model
-# (the image fetches its own copy via scripts/fetch_kokoro.py)
+# Local dev state: the test Postgres cluster, its run dir, and the TTS model
+# (the image fetches its own copy via scripts/fetch_tts_model.py)
 .pgdata/
 .run/
 models/

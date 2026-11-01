@@ -35,9 +35,9 @@ cp .env.example .env
 | `TURNSTILE_SECRET` | API | (none) | Cloudflare Turnstile server-side secret. Unset means the bot gate can't verify anyone |
 | `LLM_SESSION_TOKEN_LIMIT` | API | `150000` | LLM tokens one browser session may spend (a session is one Turnstile cookie, 12h). Past it, replies get `429` |
 | `LLM_DAILY_TOKEN_LIMIT` | API | `3000000` | LLM tokens all browser sessions together may spend in 24 hours, a ceiling on the worst case |
-| `TTS_VOICE` | API | `af_heart` | the Kokoro voice the [Unity avatar](unity-avatar.md) speaks with |
+| `TTS_VOICE` | API | `af_heart` | the Paradee voice the [Unity avatar](unity-avatar.md) speaks with: `af_heart` or `am_puck` (American), `bf_isabella` or `bm_fable` (British) |
 | `TTS_SPEED` | API | `1.0` | the avatar's speaking pace |
-| `KOKORO_MODEL` / `KOKORO_VOICES` | API | `server/models/…` | paths to the Kokoro model and voice files (`scripts/fetch_kokoro.py` downloads them) |
+| `PARADEE_MODEL` / `PARADEE_CONFIG` | API | `server/models/…` | paths to the Paradee model and config files (`scripts/fetch_tts_model.py` downloads them) |
 | `TRANSCRIBE_MODEL` | API | `gpt-4o-transcribe` | speech-to-text model on the LLM gateway, for the avatar's voice input (e.g. `granite-speech-4.1-2b-plus` on Lumen) |
 
 ## Trying Other Models And Prompts
