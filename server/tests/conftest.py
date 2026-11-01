@@ -31,7 +31,7 @@ def _daemon_off_unless_set(monkeypatch):
     from vex_agent.ingest.fetch_invite_hub_logs import clear_cached_token
 
     clear_cached_token()
-    # Booting the app (with TestClient(app)) would load the real Kokoro model in a
+    # Booting the app (with TestClient(app)) would load the real TTS model in a
     # background thread, then die mid-inference when pytest exits. test_tts.py covers
     # real synthesis directly.
     import vex_agent.app

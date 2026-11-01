@@ -44,14 +44,14 @@ def warm_up() -> None:
 
 
 def warm_up_tts() -> None:
-    """Load Kokoro and run its first-run setup off the request path. Its own thread:
+    """Load the TTS model and run its first-run setup off the request path. Its own thread:
     the Invite Hub warm-up can spend minutes draining a log backlog, and the avatar
     shouldn't wait behind it. Best-effort, like warm_up."""
     try:
         tts.warm()
         logger.info("TTS warm-up done")
     except Exception:
-        logger.warning("TTS warm-up skipped (run scripts/fetch_kokoro.py?)", exc_info=True)
+        logger.warning("TTS warm-up skipped (run scripts/fetch_tts_model.py?)", exc_info=True)
 
 
 def get_allowed_origins() -> list[str]:

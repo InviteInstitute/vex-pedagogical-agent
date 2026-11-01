@@ -14,7 +14,7 @@ sequenceDiagram
     participant U as Unity avatar (WebGL)
     participant B as Backend bridge
     participant P as Feedback pipeline
-    participant K as Kokoro (in process)
+    participant K as Paradee TTS (in process)
     U->>B: POST /generate-feedback-from-text (conversation, student_id, audioFeedback)
     B->>P: store the student turn, classify, generate
     P-->>B: reply + question type
@@ -26,24 +26,25 @@ sequenceDiagram
 
 ## Speech
 
-Speech is Kokoro-82M running inside the backend on the CPU through ONNX Runtime
-(`services/tts.py`). No GPU, service, or API key is involved, and student text never
-leaves the server. Fetch the model once (about 350MB into `server/models/`, the Docker
-image does this itself):
+Speech is [Paradee-8M](https://huggingface.co/sahilmahendrakar/Paradee-8M-v1.2), an
+8M-parameter distillation of Kokoro-82M, running inside the backend on the CPU through
+ONNX Runtime (`services/tts.py`). No GPU, service, or API key is involved, and student
+text never leaves the server. Fetch the model once (about 9MB into `server/models/`, the
+Docker image does this itself):
 
 ```bash
-python server/scripts/fetch_kokoro.py
+python server/scripts/fetch_tts_model.py
 ```
 
-Synthesis time grows with length (about 0.75s for a 7-word sentence, 2.5s for 27
+Synthesis time grows with length (about 0.07s for an 8-word sentence, 0.2s for 27
 words on an 8-core CPU), and the avatar can only play a clip once it has all of it.
 So a reply is spoken a sentence at a time: when the client asks with `speak: true`,
 `/v1/students/{id}/responses` returns the reply's `speech` sentences and starts
 synthesizing them right away, and Unity plays them in order while fetching the next.
 Synthesis runs as cached jobs, so prepared or repeated lines (the greeting) are
-served at once. On the production server the tutor starts talking 0.4 to 1.2 seconds
-after the reply arrives. Use the full precision model: the int8 one was about 6x
-slower on CPUs without VNNI.
+served at once. Paradee pads each clip with about 0.3s of silence before the speech and
+0.5s after it, so `services/tts.py` trims clips to a short pause, or the sentences of a
+reply would play with long gaps between them.
 
 ## Building The WebGL Player
 

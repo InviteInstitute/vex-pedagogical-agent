@@ -16,9 +16,7 @@ load_dotenv(dotenv_path=env_path)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Export message feedback reviews to CSV."
-    )
+    parser = argparse.ArgumentParser(description="Export message feedback reviews to CSV.")
     parser.add_argument(
         "--name",
         default="reviews.csv",

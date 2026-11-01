@@ -16,9 +16,7 @@ load_dotenv(dotenv_path=env_path)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Export all messages with latest feedback to CSV."
-    )
+    parser = argparse.ArgumentParser(description="Export all messages with latest feedback to CSV.")
     parser.add_argument(
         "--name",
         default="messages.csv",

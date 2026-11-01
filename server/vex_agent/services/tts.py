@@ -1,21 +1,21 @@
-"""Local text-to-speech for the Unity avatar: Kokoro-82M via ONNX Runtime, in process.
+"""Local text-to-speech for the Unity avatar: Paradee-8M (an 8M-parameter distillation
+of Kokoro-82M) via ONNX Runtime, in process.
 
 No separate service and no network hop: the model loads once (warmed at boot by
 app.warm_up) and speech is synthesized on the CPU. Measured on the dev VM (8-core
-Haswell, AVX2): ~0.75s for a 7-word sentence, ~2.5s for a 27-word reply; synthesis
-time grows with length. The fp32 model is used on purpose; the int8 one ran ~6x
-slower there (no VNNI), fp16 was no faster.
+Haswell, AVX2, 4 threads): ~0.07s for an 8-word sentence, ~0.2s for a 27-word reply,
+about 10x faster than Kokoro-82M was there. The int8 file runs as fast as the fp32
+one on that CPU, so the 8.5 MB int8 file is used.
 
 The avatar can't start a clip until it has all of it, so a reply is spoken a
 sentence at a time (speech_chunks): the first sentence plays while the next is
 prepared. Synthesis runs as cached jobs, so a reply prepared when it was generated
 (prepare) or a line many students hear (the greeting) is ready when asked for.
 
-Model files come from scripts/fetch_kokoro.py (into server/models/, git-ignored).
+Model files come from scripts/fetch_tts_model.py (into server/models/, git-ignored).
 """
 
 import io
-import logging
 import os
 import re
 import threading
@@ -27,23 +27,34 @@ from pathlib import Path
 
 import numpy as np
 
-# kokoro-onnx's phonemizer warns "words count mismatch" on most punctuated text; it's
-# benign (the phonemes are fine) and would otherwise log on every reply.
-logging.getLogger("phonemizer").setLevel(logging.ERROR)
-
 MODELS_DIR = Path(__file__).resolve().parents[2] / "models"
-KOKORO_MODEL = os.getenv("KOKORO_MODEL", str(MODELS_DIR / "kokoro-v1.0.onnx"))
-KOKORO_VOICES = os.getenv("KOKORO_VOICES", str(MODELS_DIR / "voices-v1.0.bin"))
-# ponytail: voice and pace are calibration knobs for the study, not code.
+PARADEE_MODEL = os.getenv("PARADEE_MODEL", str(MODELS_DIR / "paradee_int8.onnx"))
+PARADEE_CONFIG = os.getenv("PARADEE_CONFIG", str(MODELS_DIR / "paradee_config.json"))
+# ponytail: voice and pace are calibration knobs for the study, not code. Paradee 1.2
+# voices: af_heart, am_puck (American), bf_isabella, bm_fable (British).
 TTS_VOICE = os.getenv("TTS_VOICE", "af_heart")
 TTS_SPEED = float(os.getenv("TTS_SPEED", "1.0"))
+# Paradee pads each clip with ~0.3s of silence before and ~0.5s after; the avatar plays
+# a reply a sentence per clip, so that would put ~0.8s gaps between sentences. Clips are
+# trimmed to Kokoro's padding (~0.05s / ~0.12s).
+_SILENCE = 0.01  # |sample| below this counts as silence
+_KEEP_BEFORE, _KEEP_AFTER = 0.05, 0.12  # seconds of silence kept around the speech
 
 
 @lru_cache(maxsize=1)
-def _kokoro():
-    from kokoro_onnx import Kokoro  # deferred: onnxruntime import is slow, tests stub this
+def _paradee():
+    from paradee import Paradee  # deferred: onnxruntime/spaCy import is slow, tests stub this
 
-    return Kokoro(KOKORO_MODEL, KOKORO_VOICES)
+    return Paradee(model_path=PARADEE_MODEL, config_path=PARADEE_CONFIG, threads=4)
+
+
+def trim_silence(samples: np.ndarray, sample_rate: int) -> np.ndarray:
+    """Cut the model's long lead-in and tail down to a short natural pause."""
+    loud = np.flatnonzero(np.abs(samples) > _SILENCE)
+    if not loud.size:
+        return samples
+    start = max(0, loud[0] - int(_KEEP_BEFORE * sample_rate))
+    return samples[start : loud[-1] + 1 + int(_KEEP_AFTER * sample_rate)]
 
 
 def to_wav(samples: np.ndarray, sample_rate: int) -> bytes:
@@ -80,9 +91,10 @@ def speech_chunks(text: str) -> list[str]:
 _JOB_CACHE_SIZE = 64
 _jobs: OrderedDict[str, Future] = OrderedDict()
 _jobs_lock = threading.Lock()
-# Two at a time: a second student's reply doesn't wait for the first's, and ONNX
-# Runtime already spreads each synthesis over the cores.
-_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="tts")
+# One at a time: Paradee's G2P (spaCy, espeak) isn't thread-safe, and a reply takes
+# ~0.2s, so a second student's reply waits at most that long behind the first's.
+# ponytail: one worker; a pool of Paradee instances if a full class queues up.
+_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="tts")
 
 
 def _job(text: str) -> Future:
@@ -117,14 +129,16 @@ def clear_cache() -> None:
 
 
 def synthesize(text: str) -> bytes:
-    samples, sample_rate = _kokoro().create(text, voice=TTS_VOICE, speed=TTS_SPEED, lang="en-us")
-    return to_wav(samples, sample_rate)
+    from paradee import SAMPLE_RATE
+
+    samples = _paradee()(text, speed=TTS_SPEED, voice=TTS_VOICE)
+    return to_wav(trim_silence(samples, SAMPLE_RATE), SAMPLE_RATE)
 
 
 def warm() -> None:
     """Load the model and run one reply-length inference at boot, so ONNX Runtime's
     first-run setup and buffer growth don't land on the first student's request
-    (a short warm-up text left ~1.3s of that cost behind)."""
+    (a short warm-up text leaves part of that cost behind)."""
     synthesize(
         "Nice work getting the robot to the crater. Which block could lower the arm "
         "so it can scoop up the sample before driving back to the lab?"

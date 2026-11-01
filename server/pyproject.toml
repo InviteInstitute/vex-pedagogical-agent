@@ -19,7 +19,11 @@ dependencies = [
     "uvicorn==0.35.0",
     "itsdangerous>=2.1",       # signs the "solved Turnstile" cookie (api/turnstile)
     "httpx",                   # Turnstile siteverify (also pulled in by openai)
-    "kokoro-onnx==0.6.1",      # local TTS for the Unity avatar (services/tts)
+    # Local TTS for the Unity avatar (services/tts): Paradee v1.2, pinned to its tag's
+    # commit as a tarball (no git needed in the slim image), plus the spaCy model its G2P
+    # loads (misaki would otherwise try to download it at runtime).
+    "paradee @ https://github.com/sahilmahendrakar/paradee/archive/aae3cc46657bc69c6dbf9573bba556fb233f6bc0.tar.gz",
+    "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
 ]
 
 [project.optional-dependencies]

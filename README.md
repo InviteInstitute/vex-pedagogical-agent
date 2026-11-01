@@ -100,9 +100,9 @@ at <https://inviteinstitute.github.io/vex-pedagogical-agent/>.
 
 `unity/` talks to the backend through a small bridge (`server/vex_agent/api/unity.py`):
 `POST /generate-feedback-from-text` (and `-voice`, which transcribes first) answers like
-the chat does, and `GET /tts` speaks the reply. Speech is Kokoro-82M running in the
-backend process on the CPU (about 3s for a full reply, no GPU or API key); fetch the model
-once with `python server/scripts/fetch_kokoro.py`. Building and serving the avatar is in
+the chat does, and `GET /tts` speaks the reply. Speech is Paradee-8M (a small distillation
+of Kokoro-82M) running in the backend process on the CPU (about 0.2s for a full reply, no
+GPU or API key); fetch the model once with `python server/scripts/fetch_tts_model.py`. Building and serving the avatar is in
 [webgl/README.md](webgl/README.md) and the
 [Unity avatar](https://inviteinstitute.github.io/vex-pedagogical-agent/guides/unity-avatar/) docs.
 
