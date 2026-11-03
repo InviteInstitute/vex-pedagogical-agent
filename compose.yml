@@ -26,7 +26,12 @@ services:
   api:
     build: ./server
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - .env
+      # On the prod server the Lumen key lives in /etc/lumen.env (see the infra repo),
+      # so it stays out of this checkout. It wins over .env. Elsewhere it is absent.
+      - path: /etc/lumen.env
+        required: false
     depends_on:
       db:
         condition: service_healthy
